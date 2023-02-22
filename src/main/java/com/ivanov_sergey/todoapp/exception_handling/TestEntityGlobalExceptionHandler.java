@@ -9,16 +9,16 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class TestEntityGlobalExceptionHandler {
 
     @ExceptionHandler
-    public ResponseEntity<TestEntityIncorrectData> handleException(NoSuchTestEntityException exception){
-        TestEntityIncorrectData data = new TestEntityIncorrectData();
+    public ResponseEntity<TaskIncorrectData> handleException(NoSuchTestEntityException exception){
+        TaskIncorrectData data = new TaskIncorrectData();
         data.setInfo(exception.getMessage());
 
         return new ResponseEntity<>(data, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler
-    public ResponseEntity<TestEntityIncorrectData> handleException(Exception exception){
-        TestEntityIncorrectData data = new TestEntityIncorrectData();
+    public ResponseEntity<TaskIncorrectData> handleException(Exception exception){
+        TaskIncorrectData data = new TaskIncorrectData();
         data.setInfo(exception.getMessage());
 
         return new ResponseEntity<>(data, HttpStatus.BAD_REQUEST);

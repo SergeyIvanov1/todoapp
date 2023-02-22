@@ -5,168 +5,256 @@ databaseChangeLog:
       author: sergey_ivanov
       changes:
         - createTable:
-            tableName: test_entities
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  remarks: "user id"
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: create_at
+                  type: TIMESTAMP
+                  remarks: "create date"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  remarks: "updated date"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: username
+                  type: varchar(100)
+                  remarks: "user name"
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: 2
+      author: sergey_ivanov
+      changes:
+        - createTable:
+            tableName: tasks
             columns:
               - column:
                   name: id
                   type: bigint
                   autoIncrement:  true
-                  remarks: "test_entity id"
+                  remarks: "task id"
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: title
+                  type: varchar(255)
+                  remarks: "title"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: varchar(255)
+                  remarks: "description"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: content
+                  type: text
+                  remarks: "content task"
+                  constraints:
+                    nullable: true
+              - column:
+                  name: status
+                  type: varchar(50)
+#                  type: enum("To Do", "In progress", "Code review", "Tests", "Done")
+                  remarks: "status value"
+                  constraints:
+                    nullable: true
+#                    nullable: false
+              - column:
+                  name: priority
+                  type: varchar(50)
+#                  type: enum("Low", "Medium", "High")
+                  remarks: "priority value"
+                  constraints:
+                    nullable: true
+#                    nullable: false
+              - column:
+                  name: hours
+                  type: integer
+                  remarks: "hours for solution"
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: user_id
+                  type: bigint
+                  remarks: "user id"
+                  constraints:
+                    nullable: true
+#                    nullable: false
+                    foreignKeyName: fk_user_id
+                    references: users(id)
+#              task_id and task_comment
+              - column:
+                  name: create_at
+                  type: TIMESTAMP
+                  remarks: "create date"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  remarks: "updated date"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: actual_start_date
+                  type: TIMESTAMP
+                  remarks: "actual date of start"
+                  constraints:
+                    nullable: true
+              - column:
+                  name: actual_end_date
+                  type: TIMESTAMP
+                  remarks: "actual date of ending task"
+                  constraints:
+                    nullable: true
+  - changeSet:
+      id: 3
+      author: sergey_ivanov
+      changes:
+        - createTable:
+            tableName: tags
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  remarks: "tag id"
                   constraints:
                     primaryKey: true
                     nullable: false
               - column:
                   name: name
-                  type: varchar(25)
-                  remarks: "test_entity name"
+                  type: varchar(20)
+                  remarks: "tag name"
                   constraints:
                     nullable: false
               - column:
-                  name: int_value
-                  type: integer
-                  remarks: "integer value"
+                  name: color
+                  type: varchar(20)
+                  remarks: "tag color"
                   constraints:
                     nullable: false
-#              - column:
-#                  name: is_subway
-#                  type: boolean
-#                  remarks: "is subway"
-#              - column:
-#                  name: country
-#                  type: varchar(50)
-#                  remarks: "country name"
-#                  constraints:
-#                    nullable: false
   - changeSet:
-      id: 2
-      author: sergeyivanov
+      id: 4
+      author: sergey_ivanov
       changes:
-        - insert:
-            tableName: test_entities
+        - createTable:
+            tableName: task_tag
             columns:
-#              - column:
-#                  name: id
-#                  value: "1"
               - column:
-                  name: name
-                  value: "Test entity"
+                  name: task_id
+                  type: bigint
+                  remarks: "task id"
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_task_id
+                    references: tasks(id)
               - column:
-                  name: int_value
-                  value: "577253"
-#              - column:
-#                  name: is_subway
-#                  value: "false"
-#              - column:
-#                  name: country
-#                  value: "Russia"
-#        - insert:
-#            tableName: attractions
-#            columns:
-#              - column:
-#                  name: id
-#                  value: "1"
-#              - column:
-#                  name: attraction_name
-#                  value: "Воскресенская гора"
-#              - column:
-#                  name: date_building
-#                  value: "2004-05-01"
-#              - column:
-#                  name: short_description
-#                  value: "Высокий обрывистый холм исторически считается местом основания Томска."
-#              - column:
-#                  name: attraction_type
-#                  value: "MUSEUM"
-#              - column:
-#                  name: city_id
-#                  value: "1"
-#  - changeSet:
-#      id: 3
-#      author: sergeyivanov
-#      changes:
-#        - createTable:
-#            tableName: attractions
-#            columns:
-#              - column:
-#                  name: id
-#                  type: bigint
-#                  autoIncrement:  true
-#                  remarks: "Unique attractions id"
-#                  constraints:
-#                    primaryKey: true
-#                    nullable: false
-#              - column:
-#                  name: attraction_name
-#                  type: varchar(100)
-#                  remarks: "name of attraction"
-#                  constraints:
-#                    nullable: false
-#              - column:
-#                  name: date_building
-#                  type: date
-#                  remarks: "date of building"
-#                  constraints:
-#                    nullable: true
-#              - column:
-#                  name: short_description
-#                  type: varchar(255)
-#                  remarks: "short description"
-#                  constraints:
-#                    nullable: false
-#              - column:
-#                  name: attraction_type
-#                  type: varchar(20)
-#                  remarks: "type of attraction"
-#                  constraints:
-#                    nullable: false
-#              - column:
-#                  name: city_id
-#                  type: integer
-#                  remarks: "User telegram identifier"
-#                  constraints:
-#                    nullable: false
-#  - changeSet:
-#      id: 4
-#      author: sergeyivanov
-#      changes:
-#        - createTable:
-#            tableName: attractions
-#            columns:
-#              - column:
-#                  name: id
-#                  type: bigint
-#                  autoIncrement:  true
-#                  remarks: "Unique attractions id"
-#                  constraints:
-#                    primaryKey: true
-#                    nullable: false
-#              - column:
-#                  name: attraction_name
-#                  type: varchar(100)
-#                  remarks: "name of attraction"
-#                  constraints:
-#                    nullable: false
-#              - column:
-#                  name: date_building
-#                  type: date
-#                  remarks: "date of building"
-#                  constraints:
-#                    nullable: true
-#              - column:
-#                  name: short_description
-#                  type: varchar(255)
-#                  remarks: "short description"
-#                  constraints:
-#                    nullable: false
-#              - column:
-#                  name: attraction_type
-#                  type: varchar(20)
-#                  remarks: "type of attraction"
-#                  constraints:
-#                    nullable: false
-#              - column:
-#                  name: city_id
-#                  type: integer
-#                  remarks: "User telegram identifier"
-#                  constraints:
-#                    nullable: false
+                  name: tag_id
+                  type: bigint
+                  remarks: "tag id"
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_tag_id
+                    references: tags(id)
+
+  - changeSet:
+      id: 5
+      author: sergey_ivanov
+      changes:
+        - createTable:
+            tableName: comments
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  remarks: "comment id"
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: create_at
+                  type: TIMESTAMP
+                  remarks: "create date"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  remarks: "updated date"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: comment
+                  type: varchar(2048)
+                  remarks: "comment by task"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: task_id
+                  type: bigint
+                  remarks: "task id"
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_task_id
+                    references: tasks(id)
+              - column:
+                  name: user_id
+                  type: bigint
+                  remarks: "user id"
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_user_id
+                    references: users(id)
+
+  - changeSet:
+      id: 6
+      author: sergey_ivanov
+      changes:
+        - createTable:
+            tableName: tutorials
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  remarks: "tutorial id"
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: description
+                  type: varchar(255)
+                  remarks: "description"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: published
+                  type: boolean
+                  remarks: "published"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: title
+                  type: varchar(255)
+                  remarks: "title"
+                  constraints:
+                    nullable: false
+

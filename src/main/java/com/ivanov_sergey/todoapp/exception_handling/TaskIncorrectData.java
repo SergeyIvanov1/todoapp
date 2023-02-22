@@ -1,10 +1,10 @@
 package com.ivanov_sergey.todoapp.exception_handling;
 
-public class TestEntityIncorrectData {
+public class TaskIncorrectData {
 
     private String info;
 
-    public TestEntityIncorrectData() {
+    public TaskIncorrectData() {
     }
 
     public String getInfo() {
