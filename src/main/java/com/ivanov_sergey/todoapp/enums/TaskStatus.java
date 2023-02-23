@@ -33,6 +33,10 @@ public enum TaskStatus {
         return null;
     }
 
+    public static String getValueByTaskStatus(TaskStatus taskStatus){
+        return taskStatus.getValue();
+    }
+
     public static List<TaskStatus> getAll(){
         return List.of(values());
     }

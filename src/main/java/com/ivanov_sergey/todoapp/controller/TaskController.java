@@ -49,14 +49,30 @@ public class TaskController {
     }
 
     @GetMapping("/tasks/{id}")
-    public ResponseEntity<Task> getTaskById(@PathVariable("id") long id) {
+    public ResponseEntity<TaskDTO> getTaskById(@PathVariable("id") long id) {
         Optional<Task> taskOptional = taskRepository.findById(id);
-
+        Task taskFromDB;
         if (taskOptional.isPresent()) {
-            return new ResponseEntity<>(taskOptional.get(), HttpStatus.OK);
+            taskFromDB = taskOptional.get();
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        TaskDTO taskDTO = TaskDTO.builder()
+                .id(taskFromDB.getId())
+                .title(taskFromDB.getTitle())
+                .description(taskFromDB.getDescription())
+                .content(taskFromDB.getContent())
+                .status(TaskStatus.getValueByTaskStatus(taskFromDB.getStatus()))
+                .priority(TaskPriority.getValueByTaskPriority(taskFromDB.getPriority()))
+                .hours(taskFromDB.getHours())
+                .build();
+        return new ResponseEntity<>(taskDTO, HttpStatus.OK);
+
+//        if (taskOptional.isPresent()) {
+//            return new ResponseEntity<>(taskOptional.get(), HttpStatus.OK);
+//        } else {
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        }
     }
 
     @PostMapping("/tasks")
@@ -68,7 +84,7 @@ public class TaskController {
                     .content(taskDTO.getContent())
                     .status(TaskStatus.getTaskStatusByValue(taskDTO.getStatus()))
                     .priority(TaskPriority.getTaskPriorityByValue(taskDTO.getPriority()))
-                    .hours(taskDTO.getHours())
+                    .hours(Integer.valueOf(taskDTO.getHours()))
                     .build());
 
             return new ResponseEntity<>(savingTask, HttpStatus.CREATED);

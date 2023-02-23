@@ -18,18 +18,12 @@ import java.util.List;
 @AllArgsConstructor
 public class TaskDTO {
 
+    private Long id;
     private String title;
-
     private String description;
-
     private String content;
-
     private String status;
-//    private TaskStatus status;
-
     private String priority;
-//    private TaskPriority priority;
-
     private Integer hours;
 
 //    private User user;

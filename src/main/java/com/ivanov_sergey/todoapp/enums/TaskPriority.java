@@ -30,6 +30,10 @@ public enum TaskPriority {
         return null;
     }
 
+    public static String getValueByTaskPriority(TaskPriority taskPriority){
+        return taskPriority.getValue();
+    }
+
     public static List<TaskPriority> getAll(){
         return List.of(values());
     }

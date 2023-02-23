@@ -15,16 +15,28 @@ databaseChangeLog:
                   constraints:
                     primaryKey: true
                     nullable: false
+              #              - column:
+              #                  name: create_at
+              #                  type: TIMESTAMP
+              #                  remarks: "create date"
+              #                  constraints:
+              #                    nullable: false
+              #              - column:
+              #                  name: updated_at
+              #                  type: TIMESTAMP
+              #                  remarks: "updated date"
+              #                  constraints:
+              #                    nullable: false
               - column:
-                  name: create_at
-                  type: TIMESTAMP
-                  remarks: "create date"
+                  name: first_name
+                  type: varchar(100)
+                  remarks: "first name"
                   constraints:
                     nullable: false
               - column:
-                  name: updated_at
-                  type: TIMESTAMP
-                  remarks: "updated date"
+                  name: last_name
+                  type: varchar(100)
+                  remarks: "last name"
                   constraints:
                     nullable: false
               - column:
@@ -33,6 +45,48 @@ databaseChangeLog:
                   remarks: "user name"
                   constraints:
                     nullable: false
+              - column:
+                  name: password
+                  type: varchar(100)
+                  remarks: "password"
+                  constraints:
+                    nullable: true
+              - column:
+                  name: country
+                  type: varchar(100)
+                  remarks: "country"
+                  constraints:
+                    nullable: true
+              - column:
+                  name: registered_at
+                  type: TIMESTAMP
+                  remarks: "register date"
+                  constraints:
+                    nullable: true
+              - column:
+                  name: email
+                  type: varchar(100)
+                  remarks: "email"
+                  constraints:
+                    nullable: true
+              - column:
+                  name: email_verified
+                  type: boolean
+                  remarks: "email is verified"
+                  constraints:
+                    nullable: true
+              - column:
+                  name: enable
+                  type: boolean
+                  remarks: "enable"
+                  constraints:
+                    nullable: true
+              - column:
+                  name: locked
+                  type: boolean
+                  remarks: "locked"
+                  constraints:
+                    nullable: true
   - changeSet:
       id: 2
       author: sergey_ivanov
@@ -43,7 +97,7 @@ databaseChangeLog:
               - column:
                   name: id
                   type: bigint
-                  autoIncrement:  true
+                  autoIncrement: true
                   remarks: "task id"
                   constraints:
                     primaryKey: true
@@ -69,19 +123,19 @@ databaseChangeLog:
               - column:
                   name: status
                   type: varchar(50)
-#                  type: enum("To Do", "In progress", "Code review", "Tests", "Done")
+                  #                  type: enum("To Do", "In progress", "Code review", "Tests", "Done")
                   remarks: "status value"
                   constraints:
                     nullable: true
-#                    nullable: false
+              #                    nullable: false
               - column:
                   name: priority
                   type: varchar(50)
-#                  type: enum("Low", "Medium", "High")
+                  #                  type: enum("Low", "Medium", "High")
                   remarks: "priority value"
                   constraints:
                     nullable: true
-#                    nullable: false
+              #                    nullable: false
               - column:
                   name: hours
                   type: integer
@@ -95,10 +149,10 @@ databaseChangeLog:
                   remarks: "user id"
                   constraints:
                     nullable: true
-#                    nullable: false
+                    #                    nullable: false
                     foreignKeyName: fk_user_id
                     references: users(id)
-#              task_id and task_comment
+              #              task_id and task_comment
               - column:
                   name: create_at
                   type: TIMESTAMP
@@ -143,13 +197,15 @@ databaseChangeLog:
                   type: varchar(20)
                   remarks: "tag name"
                   constraints:
-                    nullable: false
+                    nullable: true
+              #                    nullable: false
               - column:
                   name: color
                   type: varchar(20)
                   remarks: "tag color"
                   constraints:
-                    nullable: false
+                    nullable: true
+  #                    nullable: false
   - changeSet:
       id: 4
       author: sergey_ivanov

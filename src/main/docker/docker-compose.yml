@@ -1,0 +1,26 @@
+version: '2'
+
+services:
+  app:
+    image: 'docker-spring-boot-postgres:latest'
+    build:
+      context: .
+    ports:
+      - "8082:8080"
+    container_name: app
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/todo_app_db
+      - SPRING_DATASOURCE_USERNAME=bestuser
+      - SPRING_DATASOURCE_PASSWORD=bestuser
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=none
+
+  db:
+    image: 'postgres:13.1-alpine'
+    volumes:
+      - ../resources/db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    container_name: db
+    environment:
+      - POSTGRES_USER=bestuser
+      - POSTGRES_PASSWORD=bestuser

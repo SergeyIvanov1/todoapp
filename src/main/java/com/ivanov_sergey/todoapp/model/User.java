@@ -13,6 +13,7 @@ import java.time.OffsetDateTime;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
 @Table(name = "users")
 public class User {
@@ -20,14 +21,42 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @CreationTimestamp
-    @Column(name = "create_at")
-    private Timestamp createAt;
+//    @CreationTimestamp
+//    @Column(name = "create_at")
+//    private Timestamp createAt;
+//
+//    @UpdateTimestamp
+//    @Column(name = "updated_at")
+//    private Timestamp updateAt;
 
-    @UpdateTimestamp
-    @Column(name = "updated_at")
-    private Timestamp updateAt;
+    @Column(name = "first_name")
+    private String firstName;
+
+    @Column(name = "last_name")
+    private String lastName;
 
     @Column(name = "username")
     private String username;
+
+    @Column(name = "password")
+    private String password;
+
+    @Column(name = "country")
+    private String country;
+
+    @CreationTimestamp
+    @Column(name = "registered_at")
+    private Timestamp registeredAt;
+
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "email_verified")
+    private boolean emailVerified;
+
+    @Column(name = "enable")
+    private boolean enable;
+
+    @Column(name = "locked")
+    private boolean locked;
 }
