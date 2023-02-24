@@ -39,18 +39,18 @@ databaseChangeLog:
                   remarks: "last name"
                   constraints:
                     nullable: false
-              - column:
-                  name: username
-                  type: varchar(100)
-                  remarks: "user name"
-                  constraints:
-                    nullable: false
+#              - column:
+#                  name: username
+#                  type: varchar(100)
+#                  remarks: "user name"
+#                  constraints:
+#                    nullable: false
               - column:
                   name: password
                   type: varchar(100)
                   remarks: "password"
                   constraints:
-                    nullable: true
+                    nullable: false
               - column:
                   name: country
                   type: varchar(100)
@@ -68,7 +68,7 @@ databaseChangeLog:
                   type: varchar(100)
                   remarks: "email"
                   constraints:
-                    nullable: true
+                    nullable: false
               - column:
                   name: email_verified
                   type: boolean
@@ -76,9 +76,9 @@ databaseChangeLog:
                   constraints:
                     nullable: true
               - column:
-                  name: enable
+                  name: enabled
                   type: boolean
-                  remarks: "enable"
+                  remarks: "enabled"
                   constraints:
                     nullable: true
               - column:
@@ -87,6 +87,14 @@ databaseChangeLog:
                   remarks: "locked"
                   constraints:
                     nullable: true
+              - column:
+                  name: role_id
+                  type: bigint
+                  remarks: "role"
+                  constraints:
+                    nullable: true
+                    foreignKeyName: fk_role_id
+                    references: roles(id)
   - changeSet:
       id: 2
       author: sergey_ivanov
@@ -280,37 +288,37 @@ databaseChangeLog:
                     foreignKeyName: fk_user_id
                     references: users(id)
 
-  - changeSet:
-      id: 6
-      author: sergey_ivanov
-      changes:
-        - createTable:
-            tableName: tutorials
-            columns:
-              - column:
-                  name: id
-                  type: bigint
-                  autoIncrement: true
-                  remarks: "tutorial id"
-                  constraints:
-                    primaryKey: true
-                    nullable: false
-              - column:
-                  name: description
-                  type: varchar(255)
-                  remarks: "description"
-                  constraints:
-                    nullable: false
-              - column:
-                  name: published
-                  type: boolean
-                  remarks: "published"
-                  constraints:
-                    nullable: false
-              - column:
-                  name: title
-                  type: varchar(255)
-                  remarks: "title"
-                  constraints:
-                    nullable: false
+#  - changeSet:
+#      id: 6
+#      author: sergey_ivanov
+#      changes:
+#        - createTable:
+#            tableName: tutorials
+#            columns:
+#              - column:
+#                  name: id
+#                  type: bigint
+#                  autoIncrement: true
+#                  remarks: "tutorial id"
+#                  constraints:
+#                    primaryKey: true
+#                    nullable: false
+#              - column:
+#                  name: description
+#                  type: varchar(255)
+#                  remarks: "description"
+#                  constraints:
+#                    nullable: false
+#              - column:
+#                  name: published
+#                  type: boolean
+#                  remarks: "published"
+#                  constraints:
+#                    nullable: false
+#              - column:
+#                  name: title
+#                  type: varchar(255)
+#                  remarks: "title"
+#                  constraints:
+#                    nullable: false
 

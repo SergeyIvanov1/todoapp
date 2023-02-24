@@ -12,7 +12,7 @@ import java.time.OffsetDateTime;
 @Setter
 @ToString
 @AllArgsConstructor
-@NoArgsConstructor
+//@NoArgsConstructor
 @Builder
 @Entity
 @Table(name = "users")
@@ -21,6 +21,11 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
+    public User() {
+        super();
+        this.enabled=false;
+    }
 //    @CreationTimestamp
 //    @Column(name = "create_at")
 //    private Timestamp createAt;
@@ -35,8 +40,8 @@ public class User {
     @Column(name = "last_name")
     private String lastName;
 
-    @Column(name = "username")
-    private String username;
+//    @Column(name = "username")
+//    private String username;
 
     @Column(name = "password")
     private String password;
@@ -54,9 +59,13 @@ public class User {
     @Column(name = "email_verified")
     private boolean emailVerified;
 
-    @Column(name = "enable")
-    private boolean enable;
+    @Column(name = "enabled")
+    private boolean enabled;
 
     @Column(name = "locked")
     private boolean locked;
+
+    @OneToOne
+    @JoinColumn(name = "role_id", referencedColumnName = "id")
+    private Role role;
 }
