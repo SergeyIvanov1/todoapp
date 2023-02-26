@@ -5,6 +5,27 @@ databaseChangeLog:
       author: sergey_ivanov
       changes:
         - createTable:
+            tableName: roles
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  remarks: "role id"
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(255)
+                  remarks: "name role"
+                  constraints:
+                    nullable: true
+  - changeSet:
+      id: 2
+      author: sergey_ivanov
+      changes:
+        - createTable:
             tableName: users
             columns:
               - column:
@@ -39,12 +60,12 @@ databaseChangeLog:
                   remarks: "last name"
                   constraints:
                     nullable: false
-#              - column:
-#                  name: username
-#                  type: varchar(100)
-#                  remarks: "user name"
-#                  constraints:
-#                    nullable: false
+              #              - column:
+              #                  name: username
+              #                  type: varchar(100)
+              #                  remarks: "user name"
+              #                  constraints:
+              #                    nullable: false
               - column:
                   name: password
                   type: varchar(100)
@@ -96,7 +117,7 @@ databaseChangeLog:
                     foreignKeyName: fk_role_id
                     references: roles(id)
   - changeSet:
-      id: 2
+      id: 3
       author: sergey_ivanov
       changes:
         - createTable:
@@ -186,7 +207,7 @@ databaseChangeLog:
                   constraints:
                     nullable: true
   - changeSet:
-      id: 3
+      id: 4
       author: sergey_ivanov
       changes:
         - createTable:
@@ -215,7 +236,7 @@ databaseChangeLog:
                     nullable: true
   #                    nullable: false
   - changeSet:
-      id: 4
+      id: 5
       author: sergey_ivanov
       changes:
         - createTable:
@@ -239,7 +260,7 @@ databaseChangeLog:
                     references: tags(id)
 
   - changeSet:
-      id: 5
+      id: 6
       author: sergey_ivanov
       changes:
         - createTable:
@@ -287,28 +308,41 @@ databaseChangeLog:
                     nullable: false
                     foreignKeyName: fk_user_id
                     references: users(id)
-
-#  - changeSet:
-#      id: 6
-#      author: sergey_ivanov
-#      changes:
-#        - createTable:
-#            tableName: tutorials
-#            columns:
-#              - column:
-#                  name: id
-#                  type: bigint
-#                  autoIncrement: true
-#                  remarks: "tutorial id"
-#                  constraints:
-#                    primaryKey: true
-#                    nullable: false
-#              - column:
-#                  name: description
-#                  type: varchar(255)
-#                  remarks: "description"
-#                  constraints:
-#                    nullable: false
+  - changeSet:
+      id: 7
+      author: sergey_ivanov
+      changes:
+        - createTable:
+            tableName: verification_tokens
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  remarks: "role id"
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: token
+                  type: varchar(255)
+                  remarks: "token"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: bigint
+                  remarks: "user id"
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_token_user_id
+                    references: users(id)
+              - column:
+                  name: expiry_date
+                  type: TIMESTAMP
+                  remarks: "expiry date"
+                  constraints:
+                    nullable: true
 #              - column:
 #                  name: published
 #                  type: boolean

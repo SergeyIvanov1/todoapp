@@ -1,10 +1,11 @@
 package com.ivanov_sergey.todoapp.controller;
 
 import com.ivanov_sergey.todoapp.model.User;
-import com.ivanov_sergey.todoapp.security.VerificationToken;
+import com.ivanov_sergey.todoapp.model.VerificationToken;
 import com.ivanov_sergey.todoapp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
@@ -16,35 +17,37 @@ import java.util.Locale;
 @RequestMapping("/api")
 public class RegistrationController {
 
-    private final UserService service;
+    private final UserService userService;
 
     @Autowired
-    public RegistrationController(UserService service) {
-        this.service = service;
+    public RegistrationController(UserService userService) {
+        this.userService = userService;
     }
 
-    @GetMapping("/registrationConfirm")
-    public String confirmRegistration(WebRequest request, Model model, @RequestParam("token") String token) {
+    @GetMapping("/registration")
+    public ResponseEntity<HttpStatus> confirmRegistration(@RequestParam("token") String token) {
 
-        Locale locale = request.getLocale();
-
-        VerificationToken verificationToken = service.getVerificationToken(token);
+        VerificationToken verificationToken = userService.getVerificationToken(token);
         if (verificationToken == null) {
-            String message = messages.getMessage("auth.message.invalidToken", null, locale);
-            model.addAttribute("message", message);
-            return "redirect:/badUser.html?lang=" + locale.getLanguage();
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        if (tokenIsExpired(verificationToken)) {
+            return new ResponseEntity<>(HttpStatus.LOCKED);
         }
 
         User user = verificationToken.getUser();
-        Calendar cal = Calendar.getInstance();
-        if ((verificationToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
-            String messageValue = messages.getMessage("auth.message.expired", null, locale);
-            model.addAttribute("message", messageValue);
-            return "redirect:/badUser.html?lang=" + locale.getLanguage();
-        }
+
+        System.out.println("My SOUT user in confirmRegistration = "
+                + user); // TODO remove
 
         user.setEnabled(true);
-        service.saveRegisteredUser(user);
-        return "redirect:/login.html?lang=" + request.getLocale().getLanguage();
+        userService.saveRegisteredUser(user);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
+    private boolean tokenIsExpired(VerificationToken verificationToken){
+        Calendar cal = Calendar.getInstance();
+        return (verificationToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0;
     }
 }

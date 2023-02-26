@@ -1,6 +1,5 @@
 package com.ivanov_sergey.todoapp.security.events;
 
-import com.ivanov_sergey.todoapp.dto.UserDTO;
 import com.ivanov_sergey.todoapp.model.User;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,13 +12,12 @@ import java.util.Locale;
 public class OnRegistrationCompleteEvent extends ApplicationEvent {
     private String appUrl;
     private Locale locale;
-    private UserDTO userDTO;
+    private User user;
 
-    public OnRegistrationCompleteEvent(
-            UserDTO userDTO, Locale locale, String appUrl) {
-        super(userDTO);
+    public OnRegistrationCompleteEvent(User user, Locale locale, String appUrl) {
+        super(user);
 
-        this.userDTO = userDTO;
+        this.user = user;
         this.locale = locale;
         this.appUrl = appUrl;
     }

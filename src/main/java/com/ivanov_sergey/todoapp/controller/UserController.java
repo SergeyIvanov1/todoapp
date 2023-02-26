@@ -25,31 +25,36 @@ import java.util.*;
 @RequestMapping("/api")
 public class UserController {
 
-    @Autowired
-    ApplicationEventPublisher eventPublisher;
-
+    private final ApplicationEventPublisher eventPublisher;
     private final UserRepository userRepository;
     private final UserService userService;
 
     @Autowired
-    public UserController(UserRepository userRepository, UserService userService) {
+    public UserController(ApplicationEventPublisher eventPublisher, UserRepository userRepository, UserService userService) {
+        this.eventPublisher = eventPublisher;
         this.userRepository = userRepository;
         this.userService = userService;
     }
 
     @PostMapping("/users")
     public ResponseEntity<HttpStatus> registerUserAccount(@Valid @RequestBody UserDTO userDTO, HttpServletRequest request) {
-        UserDTO registered = userService.registerNewUserAccount(userDTO);
-            String appUrl = request.getContextPath();
-            eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registered,
-                    request.getLocale(), appUrl));
+        if(emailExists(userDTO.getEmail())){
+            throw new UserAlreadyExistException("There is an account with that email address: " + userDTO.getEmail());
+        }
+        User registeredUser = userService.registerNewUserAccount(userDTO);
+        String appUrl = request.getContextPath();
 
-            return new ResponseEntity<>(HttpStatus.CREATED);
+        System.out.println("My SOUT appUrl in registerUserAccount = " + appUrl); // TODO remove
+        System.out.println("My SOUT request.getLocale() in registerUserAccount = "
+                + request.getLocale().toString()); // TODO remove
+
+        eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registeredUser, request.getLocale(), appUrl));
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PutMapping("/users/{id}")
     public ResponseEntity<String> updateUser(@PathVariable("id") long id, @Valid @RequestBody UserDTO userDTO) {
-        Optional<User> userData = userRepository.findById(id);
+        Optional<com.ivanov_sergey.todoapp.model.User> userData = userRepository.findById(id);
 
         if (userData.isPresent()) {
             User userFromDB = userData.get();
@@ -57,6 +62,7 @@ public class UserController {
             userFromDB.setLastName(userDTO.getLastName());
             userFromDB.setEmail(userDTO.getEmail());
             userFromDB.setPassword(userDTO.getPassword());
+            userRepository.save(userFromDB);
 
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
@@ -68,6 +74,16 @@ public class UserController {
     public ResponseEntity<HttpStatus> deleteUser(@PathVariable("id") long id) {
         try {
             userRepository.deleteById(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @DeleteMapping("/users")
+    public ResponseEntity<HttpStatus> deleteAllUsers() {
+        try {
+            userRepository.deleteAll();
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -108,5 +124,9 @@ public class UserController {
         Map<String, String> errors = new HashMap<>();
         errors.put("message", "An account for that email already exists.");
         return errors;
+    }
+
+    private boolean emailExists(String email){
+        return userRepository.findByEmail(email) != null;
     }
 }

@@ -45,8 +45,8 @@ public class Task {
     @Column(name = "hours")
     private Integer hours;
 
-    @JoinColumn(name = "user_id")
     @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

@@ -1,7 +1,7 @@
 package com.ivanov_sergey.todoapp.repository;
 
 import com.ivanov_sergey.todoapp.model.User;
-import com.ivanov_sergey.todoapp.security.VerificationToken;
+import com.ivanov_sergey.todoapp.model.VerificationToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface VerificationTokenRepository extends JpaRepository<VerificationToken, Long> {

@@ -109,20 +109,6 @@ public class TagController {
 
     }
 
-//    @GetMapping("/tasks/published")
-//    public ResponseEntity<List<Task>> findByPublished() {
-//        try {
-//            List<Task> tutorials = taskRepository.findByPublished(true);
-//
-//            if (tutorials.isEmpty()) {
-//                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-//            }
-//            return new ResponseEntity<>(tutorials, HttpStatus.OK);
-//        } catch (Exception e) {
-//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
-
     @ExceptionHandler
     public ResponseEntity<TaskIncorrectData> handleException(NoSuchTestEntityException exception) {
         TaskIncorrectData data = new TaskIncorrectData();

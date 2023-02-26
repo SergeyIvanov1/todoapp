@@ -1,8 +1,9 @@
-package com.ivanov_sergey.todoapp.security;
+package com.ivanov_sergey.todoapp.model;
 
-import com.ivanov_sergey.todoapp.model.User;
 import lombok.*;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -13,11 +14,12 @@ import java.util.Objects;
 
 @Getter
 @Setter
-@ToString
+//@ToString
 @RequiredArgsConstructor
 //@NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(name = "verification_tokens")
 public class VerificationToken {
     private static final int EXPIRATION = 60 * 24;
 
@@ -28,10 +30,20 @@ public class VerificationToken {
     private String token;
 
     @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
-    @JoinColumn(nullable = false, name = "user_id")
+    @JoinColumn(name = "user_id")
     private User user;
 
+    @Column(name = "expiry_date")
+//    @Temporal(TemporalType.DATE)
+//    private Timestamp expiryDate;
     private Date expiryDate;
+
+
+    public VerificationToken(String token, User user) {
+        this.token = token;
+        this.user = user;
+        expiryDate = calculateExpiryDate(EXPIRATION);
+    }
 
     private Date calculateExpiryDate(int expiryTimeInMinutes) {
         Calendar cal = Calendar.getInstance();

@@ -21,27 +21,11 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
-    public User() {
-        super();
-        this.enabled=false;
-    }
-//    @CreationTimestamp
-//    @Column(name = "create_at")
-//    private Timestamp createAt;
-//
-//    @UpdateTimestamp
-//    @Column(name = "updated_at")
-//    private Timestamp updateAt;
-
     @Column(name = "first_name")
     private String firstName;
 
     @Column(name = "last_name")
     private String lastName;
-
-//    @Column(name = "username")
-//    private String username;
 
     @Column(name = "password")
     private String password;
@@ -65,7 +49,15 @@ public class User {
     @Column(name = "locked")
     private boolean locked;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "role_id", referencedColumnName = "id")
     private Role role;
+
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
+    private VerificationToken verificationToken;
+
+    public User() {
+        super();
+        this.enabled = false;
+    }
 }

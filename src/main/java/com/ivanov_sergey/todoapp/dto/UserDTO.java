@@ -15,7 +15,7 @@ public class UserDTO {
 
     @NotNull
     @NotEmpty
-    @Pattern(regexp = "^[A-Za-z0-9+_.-]+@(.+)$", message = "Invalid email")
+    @Pattern(regexp = "^[A-Za-z0-9+_.-]+@(.+)$", message = "Invalid email: require symbols A-Z, a-z, 0-9, symbols: +_.-@.")
     private String email;
 
     @NotNull
