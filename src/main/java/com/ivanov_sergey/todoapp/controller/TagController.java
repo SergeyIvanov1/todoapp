@@ -7,7 +7,13 @@ import com.ivanov_sergey.todoapp.exception_handling.NoSuchTestEntityException;
 import com.ivanov_sergey.todoapp.exception_handling.TaskIncorrectData;
 import com.ivanov_sergey.todoapp.model.Tag;
 import com.ivanov_sergey.todoapp.model.Task;
+import com.ivanov_sergey.todoapp.model.User;
 import com.ivanov_sergey.todoapp.repository.TagRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +35,15 @@ public class TagController {
         this.tagRepository = tagRepository;
     }
 
+    @Operation(summary = "Getting all tags")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ok",
+                    content = @Content),
+            @ApiResponse(responseCode = "201", description = "Created",
+                    content = @Content),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error",
+                    content = @Content)
+    })
     @GetMapping("/tags")
     public ResponseEntity<List<Tag>> getAllTags(@RequestParam(required = false) String name) {
         try {
@@ -40,14 +55,21 @@ public class TagController {
                 tags.addAll(tagRepository.findByName(name));
 
             if (tags.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                return new ResponseEntity<>(HttpStatus.OK);
             }
-            return new ResponseEntity<>(tags, HttpStatus.OK);
+            return new ResponseEntity<>(tags, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
+    @Operation(summary = "Get a tag by its id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ok",
+                    content = @Content),
+            @ApiResponse(responseCode = "404", description = "Not Found",
+                    content = @Content)
+    })
     @GetMapping("/tags/{id}")
     public ResponseEntity<Tag> getTaskById(@PathVariable("id") long id) {
         Optional<Tag> tagOptional = tagRepository.findById(id);
@@ -59,6 +81,14 @@ public class TagController {
         }
     }
 
+    @Operation(summary = "Creating a tag")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Created",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = TagDTO.class)) }),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error",
+                    content = @Content)
+    })
     @PostMapping("/tags")
     public ResponseEntity<Tag> createTag(@RequestBody TagDTO tagDTO) {
         try {
@@ -73,6 +103,14 @@ public class TagController {
         }
     }
 
+    @Operation(summary = "Updating a tag by its id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ok",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = TagDTO.class)) }),
+            @ApiResponse(responseCode = "404", description = "Not Found",
+                    content = @Content)
+    })
     @PutMapping("/tags/{id}")
     public ResponseEntity<Tag> updateTag(@PathVariable("id") long id, @RequestBody TagDTO tagDTO) {
         Optional<Tag> tagData = tagRepository.findById(id);
@@ -88,21 +126,35 @@ public class TagController {
         }
     }
 
+    @Operation(summary = "Deleting a tag by its id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ok",
+                    content = @Content),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error",
+                    content = @Content)
+    })
     @DeleteMapping("/tags/{id}")
     public ResponseEntity<HttpStatus> deleteTag(@PathVariable("id") long id) {
         try {
             tagRepository.deleteById(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
+    @Operation(summary = "Deleting all tags")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ok",
+                    content = @Content),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error",
+                    content = @Content)
+    })
     @DeleteMapping("/tags")
     public ResponseEntity<HttpStatus> deleteAllTags() {
         try {
             tagRepository.deleteAll();
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

@@ -8,6 +8,11 @@ import com.ivanov_sergey.todoapp.model.User;
 import com.ivanov_sergey.todoapp.repository.UserRepository;
 import com.ivanov_sergey.todoapp.security.events.OnRegistrationCompleteEvent;
 import com.ivanov_sergey.todoapp.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
@@ -36,6 +41,14 @@ public class UserController {
         this.userService = userService;
     }
 
+    @Operation(summary = "Register an account of user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Created",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = UserDTO.class)) }),
+            @ApiResponse(responseCode = "400", description = "Bad Request",
+                    content = @Content)
+    })
     @PostMapping("/users")
     public ResponseEntity<HttpStatus> registerUserAccount(@Valid @RequestBody UserDTO userDTO, HttpServletRequest request) {
         if(emailExists(userDTO.getEmail())){
@@ -44,17 +57,21 @@ public class UserController {
         User registeredUser = userService.registerNewUserAccount(userDTO);
         String appUrl = request.getContextPath();
 
-        System.out.println("My SOUT appUrl in registerUserAccount = " + appUrl); // TODO remove
-        System.out.println("My SOUT request.getLocale() in registerUserAccount = "
-                + request.getLocale().toString()); // TODO remove
-
         eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registeredUser, request.getLocale(), appUrl));
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    @Operation(summary = "Updating of user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ok",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = UserDTO.class)) }),
+            @ApiResponse(responseCode = "404", description = "Not Found",
+                    content = @Content)
+    })
     @PutMapping("/users/{id}")
     public ResponseEntity<String> updateUser(@PathVariable("id") long id, @Valid @RequestBody UserDTO userDTO) {
-        Optional<com.ivanov_sergey.todoapp.model.User> userData = userRepository.findById(id);
+        Optional<User> userData = userRepository.findById(id);
 
         if (userData.isPresent()) {
             User userFromDB = userData.get();
@@ -70,6 +87,13 @@ public class UserController {
         }
     }
 
+    @Operation(summary = "Deleting an user by its id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "No Content",
+                    content = @Content),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error",
+                    content = @Content)
+    })
     @DeleteMapping("/users/{id}")
     public ResponseEntity<HttpStatus> deleteUser(@PathVariable("id") long id) {
         try {
@@ -80,6 +104,13 @@ public class UserController {
         }
     }
 
+    @Operation(summary = "Deleting all users")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "No Content",
+                    content = @Content),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error",
+                    content = @Content)
+    })
     @DeleteMapping("/users")
     public ResponseEntity<HttpStatus> deleteAllUsers() {
         try {

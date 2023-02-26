@@ -6,7 +6,13 @@ import com.ivanov_sergey.todoapp.enums.TaskStatus;
 import com.ivanov_sergey.todoapp.exception_handling.NoSuchTestEntityException;
 import com.ivanov_sergey.todoapp.exception_handling.TaskIncorrectData;
 import com.ivanov_sergey.todoapp.model.Task;
+import com.ivanov_sergey.todoapp.model.User;
 import com.ivanov_sergey.todoapp.repository.TaskRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,10 +34,19 @@ public class TaskController {
         this.taskRepository = taskRepository;
     }
 
+    @Operation(summary = "Getting all tasks")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Created",
+                    content = @Content),
+            @ApiResponse(responseCode = "200", description = "Ok",
+                    content = @Content),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error",
+                    content = @Content)
+    })
     @GetMapping("/tasks")
     public ResponseEntity<List<Task>> getAllTasks(@RequestParam(required = false) String title) {
         try {
-            List<Task> tasks = new ArrayList();
+            List<Task> tasks = new ArrayList<>();
 
             if (title == null)
                 taskRepository.findAll().forEach(tasks::add);
@@ -39,15 +54,22 @@ public class TaskController {
                 taskRepository.findByTitleContaining(title).forEach(tasks::add);
 
             if (tasks.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                return new ResponseEntity<>(HttpStatus.OK);
             }
 
-            return new ResponseEntity<>(tasks, HttpStatus.OK);
+            return new ResponseEntity<>(tasks, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
+    @Operation(summary = "Get a task by its id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ok",
+                    content = @Content),
+            @ApiResponse(responseCode = "404", description = "Not Found",
+                    content = @Content)
+    })
     @GetMapping("/tasks/{id}")
     public ResponseEntity<TaskDTO> getTaskById(@PathVariable("id") long id) {
         Optional<Task> taskOptional = taskRepository.findById(id);
@@ -75,6 +97,14 @@ public class TaskController {
 //        }
     }
 
+    @Operation(summary = "Creating a task")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Created",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = TaskDTO.class)) }),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error",
+                    content = @Content)
+    })
     @PostMapping("/tasks")
     public ResponseEntity<Task> createTask(@RequestBody TaskDTO taskDTO) {
         try {
@@ -93,6 +123,14 @@ public class TaskController {
         }
     }
 
+    @Operation(summary = "Updating a task by its id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ok",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = TaskDTO.class)) }),
+            @ApiResponse(responseCode = "404", description = "Not Found",
+                    content = @Content)
+    })
     @PutMapping("/tasks/{id}")
     public ResponseEntity<Task> updateTask(@PathVariable("id") long id, @RequestBody TaskDTO taskDTO) {
         Optional<Task> taskData = taskRepository.findById(id);
@@ -110,21 +148,35 @@ public class TaskController {
         }
     }
 
+    @Operation(summary = "Deleting a task by its id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ok",
+                    content = @Content),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error",
+                    content = @Content)
+    })
     @DeleteMapping("/tasks/{id}")
     public ResponseEntity<HttpStatus> deleteTask(@PathVariable("id") long id) {
         try {
             taskRepository.deleteById(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
+    @Operation(summary = "Deleting all tasks")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ok",
+                    content = @Content),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error",
+                    content = @Content)
+    })
     @DeleteMapping("/tasks")
     public ResponseEntity<HttpStatus> deleteAllTasks() {
         try {
             taskRepository.deleteAll();
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

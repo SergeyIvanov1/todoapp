@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User registerNewUserAccount(UserDTO userDTO) throws UserAlreadyExistException{
-        return userRepository.save(com.ivanov_sergey.todoapp.model.User.builder()
+        return userRepository.save(User.builder()
                 .firstName(userDTO.getFirstName())
                 .lastName(userDTO.getLastName())
                 .email(userDTO.getEmail())
@@ -65,7 +65,7 @@ public class UserServiceImpl implements UserService {
 //    }
 
     @Override
-    public com.ivanov_sergey.todoapp.model.User getUser(String verificationToken) {
+    public User getUser(String verificationToken) {
         return tokenRepository.findByToken(verificationToken).getUser();
     }
 

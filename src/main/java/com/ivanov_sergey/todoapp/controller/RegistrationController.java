@@ -3,6 +3,11 @@ package com.ivanov_sergey.todoapp.controller;
 import com.ivanov_sergey.todoapp.model.User;
 import com.ivanov_sergey.todoapp.model.VerificationToken;
 import com.ivanov_sergey.todoapp.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +29,15 @@ public class RegistrationController {
         this.userService = userService;
     }
 
+    @Operation(summary = "Confirmation of user registration")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "202", description = "Accepted",
+                    content = @Content),
+            @ApiResponse(responseCode = "404", description = "Token Not Found",
+                    content = @Content),
+            @ApiResponse(responseCode = "423", description = "Token Locked",
+                    content = @Content)
+    })
     @GetMapping("/registration")
     public ResponseEntity<HttpStatus> confirmRegistration(@RequestParam("token") String token) {
 
@@ -37,9 +51,6 @@ public class RegistrationController {
         }
 
         User user = verificationToken.getUser();
-
-        System.out.println("My SOUT user in confirmRegistration = "
-                + user); // TODO remove
 
         user.setEnabled(true);
         userService.saveRegisteredUser(user);
