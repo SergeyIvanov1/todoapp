@@ -1,5 +1,6 @@
 package com.ivanov_sergey.todoapp.model;
 
+import com.ivanov_sergey.todoapp.enums.ERole;
 import lombok.*;
 
 import javax.persistence.*;
@@ -7,23 +8,27 @@ import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.Objects;
 
-@Entity
-@Table(name = "roles")
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
 //@SequenceGenerator(name = "ROLE_SEQ_GENERATOR", sequenceName = "ROLE_SEQ", allocationSize = 1)
+@Entity
+@Table(name = "roles")
 public class Role implements Serializable {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "name")
-    private String name;
+    private ERole name;
 
-    public Role(String name) {
+//    @Column(name = "name")
+//    private String name;
+
+    public Role(ERole name) {
         this.name = name;
     }
 
@@ -40,3 +45,5 @@ public class Role implements Serializable {
         return Objects.hash(id, name);
     }
 }
+
+

@@ -1,6 +1,7 @@
 package com.ivanov_sergey.todoapp.service.impl;
 
 import com.ivanov_sergey.todoapp.dto.UserDTO;
+import com.ivanov_sergey.todoapp.enums.ERole;
 import com.ivanov_sergey.todoapp.exception_handling.UserAlreadyExistException;
 import com.ivanov_sergey.todoapp.model.Role;
 import com.ivanov_sergey.todoapp.model.User;
@@ -33,7 +34,7 @@ public class UserServiceImpl implements UserService {
                 .lastName(userDTO.getLastName())
                 .email(userDTO.getEmail())
                 .password(userDTO.getPassword())
-                .role(new Role("USER"))
+                .role(new Role(ERole.ROLE_USER))
                 .build());
     }
 

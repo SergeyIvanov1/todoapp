@@ -17,7 +17,7 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: name
-                  type: varchar(255)
+                  type: varchar(20)
                   remarks: "name role"
                   constraints:
                     nullable: true
@@ -50,13 +50,13 @@ databaseChangeLog:
               #                    nullable: false
               - column:
                   name: first_name
-                  type: varchar(100)
+                  type: varchar(50)
                   remarks: "first name"
                   constraints:
                     nullable: false
               - column:
                   name: last_name
-                  type: varchar(100)
+                  type: varchar(50)
                   remarks: "last name"
                   constraints:
                     nullable: false
@@ -68,7 +68,7 @@ databaseChangeLog:
               #                    nullable: false
               - column:
                   name: password
-                  type: varchar(100)
+                  type: varchar(120)
                   remarks: "password"
                   constraints:
                     nullable: false
@@ -86,7 +86,7 @@ databaseChangeLog:
                     nullable: true
               - column:
                   name: email
-                  type: varchar(100)
+                  type: varchar(50)
                   remarks: "email"
                   constraints:
                     nullable: false
