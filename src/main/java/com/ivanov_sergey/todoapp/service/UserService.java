@@ -11,7 +11,7 @@ public interface UserService {
     User registerNewUserAccount(UserDTO userDTO);
 //    User registerNewUserAccount(UserDTO userDTO) throws UserAlreadyExistException;
 
-    com.ivanov_sergey.todoapp.model.User getUser(String verificationToken);
+    User getUser(String verificationToken);
 
     void saveRegisteredUser(com.ivanov_sergey.todoapp.model.User user);
 

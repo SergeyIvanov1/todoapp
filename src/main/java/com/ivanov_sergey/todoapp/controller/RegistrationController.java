@@ -38,8 +38,9 @@ public class RegistrationController {
             @ApiResponse(responseCode = "423", description = "Token Locked",
                     content = @Content)
     })
-    @GetMapping("/registration")
-    public ResponseEntity<HttpStatus> confirmRegistration(@RequestParam("token") String token) {
+    @PostMapping("/registration")
+    public ResponseEntity<HttpStatus> confirmRegistration(@RequestBody String token) {
+//    public ResponseEntity<HttpStatus> confirmRegistration(@RequestParam("token") String token) {
 
         VerificationToken verificationToken = userService.getVerificationToken(token);
         if (verificationToken == null) {

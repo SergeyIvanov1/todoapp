@@ -1,18 +1,13 @@
 package com.ivanov_sergey.todoapp.service.impl;
 
 import com.ivanov_sergey.todoapp.dto.UserDTO;
-import com.ivanov_sergey.todoapp.enums.ERole;
 import com.ivanov_sergey.todoapp.exception_handling.UserAlreadyExistException;
-import com.ivanov_sergey.todoapp.model.Role;
 import com.ivanov_sergey.todoapp.model.User;
+import com.ivanov_sergey.todoapp.model.VerificationToken;
 import com.ivanov_sergey.todoapp.repository.UserRepository;
 import com.ivanov_sergey.todoapp.repository.VerificationTokenRepository;
-import com.ivanov_sergey.todoapp.model.VerificationToken;
 import com.ivanov_sergey.todoapp.service.UserService;
-import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.security.core.userdetails.UserDetails;
-//import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -34,7 +29,7 @@ public class UserServiceImpl implements UserService {
                 .lastName(userDTO.getLastName())
                 .email(userDTO.getEmail())
                 .password(userDTO.getPassword())
-                .role(new Role(ERole.ROLE_USER))
+//                .role(new Role(ERole.ROLE_USER)) // нет такого поля
                 .build());
     }
 
