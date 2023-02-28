@@ -1,4 +1,6 @@
 
+For showing api application you can use /swagger-ui-custom.html
+
 User can registered to app himself using a form registration.
 Added data to form, send to server. Server verifying data, saving user
 and transfer response with status "201 OK" to front.

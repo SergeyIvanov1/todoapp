@@ -1,35 +1,46 @@
 package com.ivanov_sergey.todoapp.service.impl;
 
-import com.ivanov_sergey.todoapp.dto.UserDTO;
+import com.ivanov_sergey.todoapp.enums.ERole;
 import com.ivanov_sergey.todoapp.exception_handling.UserAlreadyExistException;
+import com.ivanov_sergey.todoapp.model.Role;
 import com.ivanov_sergey.todoapp.model.User;
-import com.ivanov_sergey.todoapp.model.VerificationToken;
 import com.ivanov_sergey.todoapp.repository.UserRepository;
-import com.ivanov_sergey.todoapp.repository.VerificationTokenRepository;
+import com.ivanov_sergey.todoapp.security.payload.request.SignupRequest;
+import com.ivanov_sergey.todoapp.service.RegistrationService;
 import com.ivanov_sergey.todoapp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 public class UserServiceImpl implements UserService {
 
+    private final RegistrationService registrationService;
     private final UserRepository userRepository;
-    private final VerificationTokenRepository tokenRepository;
+
+    private final PasswordEncoder encoder;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, VerificationTokenRepository tokenRepository) {
+    public UserServiceImpl(RegistrationService registrationService,
+                           UserRepository userRepository,
+                           PasswordEncoder encoder) {
+        this.registrationService = registrationService;
         this.userRepository = userRepository;
-        this.tokenRepository = tokenRepository;
+        this.encoder = encoder;
     }
 
     @Override
-    public User registerNewUserAccount(UserDTO userDTO) throws UserAlreadyExistException{
+    public User registerNewUserAccount(SignupRequest signupRequest) throws UserAlreadyExistException{
         return userRepository.save(User.builder()
-                .firstName(userDTO.getFirstName())
-                .lastName(userDTO.getLastName())
-                .email(userDTO.getEmail())
-                .password(userDTO.getPassword())
-//                .role(new Role(ERole.ROLE_USER)) // нет такого поля
+                .firstName(signupRequest.getFirstName())
+                .lastName(signupRequest.getLastName())
+                .username(signupRequest.getUsername())
+                .email(signupRequest.getEmail())
+                .password(encoder.encode(signupRequest.getPassword()))
+                .roles(registrationService.getRolesFromRequest(signupRequest))
                 .build());
     }
 
@@ -61,23 +72,7 @@ public class UserServiceImpl implements UserService {
 //    }
 
     @Override
-    public User getUser(String verificationToken) {
-        return tokenRepository.findByToken(verificationToken).getUser();
-    }
-
-    @Override
-    public VerificationToken getVerificationToken(String token) {
-        return tokenRepository.findByToken(token);
-    }
-
-    @Override
-    public void saveRegisteredUser(User user) {
+    public void updateRegisteredUser(User user) {
         userRepository.save(user);
-    }
-
-    @Override
-    public void addToDBVerificationToken(User user, String token) {
-        VerificationToken myToken = new VerificationToken(token, user);
-        tokenRepository.save(myToken);
     }
 }

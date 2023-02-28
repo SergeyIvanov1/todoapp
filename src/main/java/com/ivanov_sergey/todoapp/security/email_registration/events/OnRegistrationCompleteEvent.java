@@ -1,4 +1,4 @@
-package com.ivanov_sergey.todoapp.security.events;
+package com.ivanov_sergey.todoapp.security.email_registration.events;
 
 import com.ivanov_sergey.todoapp.model.User;
 import lombok.Getter;

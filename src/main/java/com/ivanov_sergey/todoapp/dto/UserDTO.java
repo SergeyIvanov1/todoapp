@@ -20,6 +20,11 @@ public class UserDTO {
 
     @NotNull
     @NotEmpty
+    @Pattern(regexp = "[A-Za-zА-Яа-яЁё]{2,25}", message = "Username can contains only letters and be between 2 and 25 characters long")
+    private String username;
+
+    @NotNull
+    @NotEmpty
     @Pattern(regexp = "[A-Za-zА-Яа-яЁё]{2,25}", message = "First name can contains only letters and be between 2 and 25 characters long")
     private String firstName;
 

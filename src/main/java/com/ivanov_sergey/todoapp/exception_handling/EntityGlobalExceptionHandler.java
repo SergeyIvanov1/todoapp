@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
-public class TestEntityGlobalExceptionHandler {
+public class EntityGlobalExceptionHandler {
 
     @ExceptionHandler
     public ResponseEntity<TaskIncorrectData> handleException(NoSuchTestEntityException exception){

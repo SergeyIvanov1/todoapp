@@ -1,15 +1,12 @@
-package com.ivanov_sergey.todoapp.security.listeners;
+package com.ivanov_sergey.todoapp.security.email_registration.listeners;
 
 import com.ivanov_sergey.todoapp.model.User;
-import com.ivanov_sergey.todoapp.security.events.OnRegistrationCompleteEvent;
-import com.ivanov_sergey.todoapp.service.UserService;
+import com.ivanov_sergey.todoapp.security.email_registration.events.OnRegistrationCompleteEvent;
+import com.ivanov_sergey.todoapp.service.RegistrationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
-import org.springframework.context.MessageSource;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
 import javax.mail.MessagingException;
@@ -21,12 +18,13 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
 
     private static final String HOST = "http://89.108.102.201:8082";
     private static final String SITE = "http://myapp-s.com";
-    private final UserService userService;
+
+    private final RegistrationService verificationTokenService;
     private final JavaMailSender mailSender;
 
     @Autowired
-    public RegistrationListener(UserService userService, JavaMailSender mailSender) {
-        this.userService = userService;
+    public RegistrationListener(RegistrationService verificationTokenService, JavaMailSender mailSender) {
+        this.verificationTokenService = verificationTokenService;
         this.mailSender = mailSender;
     }
 
@@ -43,7 +41,7 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
         User user = event.getUser();
         String token = UUID.randomUUID().toString();
 
-        userService.addToDBVerificationToken(user, token);
+        verificationTokenService.addToDBVerificationToken(user, token);
 
         String recipientAddress = user.getEmail();
         String subject = "Registration Confirmation";
@@ -55,10 +53,10 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
         helper.setTo(recipientAddress);
         helper.setSubject(subject);
         helper.setText("<html><body><header><h2>Здравствуйте!</h2> Вы получили это письмо, " +
-                "потому что заполнили форму регистрации.</header>" +
+                "потому что заполнили форму регистрации на нашем сайте.</header>" +
                 "<p><strong>Для продолжения регистрации просим Вас перейти по ссылке:</strong></p>" +
                 "<a href='" + HOST + confirmationUrl + "'>переход на сайт</a>" +
-                "<br><br><p><br>Мы на связи: <br> тел. +7(960) 813-06-20<br>Почта для связи: todo.mywebapp@gmail.com<br>" +
+                "<br><br><p><br>Мы на связи: <br>Почта: todo.mywebapp@gmail.com<br>" +
                 "Сайт: <a href='" + SITE + "'>http://myapp-s.com</a></p><br>" +
                 "<footer>Проигнорируйте это письмо, если Вы не проходили регистрацию на нашем сайте.</footer>" +
                 "</body></html>", true);

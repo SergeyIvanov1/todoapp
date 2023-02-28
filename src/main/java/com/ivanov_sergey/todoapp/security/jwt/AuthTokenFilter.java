@@ -19,10 +19,10 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 //Что мы делаем внутри doFilterInternal():
-//        — получаем JWTиз заголовка Authorization (удалив Bearerпрефикс)
-//        — если в запросе есть JWT, валидируем его, парсим usernameиз него
-//        — из usernameполучаем, UserDetailsчтобы создать Authenticationобъект
-//        — устанавливаем текущий UserDetailsв SecurityContext с помощью setAuthentication(authentication)метода.
+//        — получаем JWT из заголовка Authorization (удалив Bearer префикс)
+//        — если в запросе есть JWT, валидируем его, парсим username из него
+//        — из username получаем UserDetails чтобы создать Authentication объект
+//        — устанавливаем текущий UserDetails в SecurityContext с помощью setAuthentication(authentication)метода.
 
 public class AuthTokenFilter extends OncePerRequestFilter {
     @Autowired
@@ -65,10 +65,9 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         return null;
     }
 }
-//    После этого каждый раз, когда вы хотите получить UserDetails, просто используйте SecurityContextтак:
+//    После этого каждый раз, когда вы хотите получить UserDetails, просто используйте SecurityContext так:
 //
-//        UserDetails userDetails =
-//        (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
 // userDetails.getUsername()
 // userDetails.getPassword()

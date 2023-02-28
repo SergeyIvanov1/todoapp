@@ -1,21 +1,11 @@
 package com.ivanov_sergey.todoapp.service;
 
-import com.ivanov_sergey.todoapp.dto.UserDTO;
 import com.ivanov_sergey.todoapp.model.User;
-import com.ivanov_sergey.todoapp.model.VerificationToken;
-import lombok.NoArgsConstructor;
-import org.springframework.stereotype.Service;
+import com.ivanov_sergey.todoapp.security.payload.request.SignupRequest;
 
-@Service
 public interface UserService {
-    User registerNewUserAccount(UserDTO userDTO);
+    User registerNewUserAccount(SignupRequest signupRequest);
 //    User registerNewUserAccount(UserDTO userDTO) throws UserAlreadyExistException;
 
-    User getUser(String verificationToken);
-
-    void saveRegisteredUser(com.ivanov_sergey.todoapp.model.User user);
-
-    void addToDBVerificationToken(com.ivanov_sergey.todoapp.model.User user, String token);
-
-    VerificationToken getVerificationToken(String token);
+    void updateRegisteredUser(User user);
 }

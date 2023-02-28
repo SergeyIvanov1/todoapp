@@ -8,6 +8,7 @@ import javax.persistence.*;
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Getter
@@ -58,7 +59,11 @@ public class User {
 //    @JoinColumn(name = "role_id", referencedColumnName = "id")
 //    private Role role;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER,
+            cascade = {CascadeType.PERSIST,
+                       CascadeType.MERGE,
+                       CascadeType.REFRESH,
+                       CascadeType.DETACH})
     @JoinTable(	name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
@@ -76,5 +81,18 @@ public class User {
         this.username = username;
         this.email = email;
         this.password = password;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return emailVerified == user.emailVerified && enabled == user.enabled && locked == user.locked && Objects.equals(id, user.id) && Objects.equals(username, user.username) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(password, user.password) && Objects.equals(country, user.country) && Objects.equals(registeredAt, user.registeredAt) && Objects.equals(email, user.email) && Objects.equals(roles, user.roles) && Objects.equals(verificationToken, user.verificationToken);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, username, firstName, lastName, password, country, registeredAt, email, emailVerified, enabled, locked, roles, verificationToken);
     }
 }

@@ -6,7 +6,6 @@ import com.ivanov_sergey.todoapp.exception_handling.TaskIncorrectData;
 import com.ivanov_sergey.todoapp.exception_handling.UserAlreadyExistException;
 import com.ivanov_sergey.todoapp.model.User;
 import com.ivanov_sergey.todoapp.repository.UserRepository;
-import com.ivanov_sergey.todoapp.security.events.OnRegistrationCompleteEvent;
 import com.ivanov_sergey.todoapp.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -21,7 +20,6 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.*;
 
@@ -39,26 +37,6 @@ public class UserController {
         this.eventPublisher = eventPublisher;
         this.userRepository = userRepository;
         this.userService = userService;
-    }
-
-    @Operation(summary = "Register an account of user")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Created",
-                    content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = UserDTO.class)) }),
-            @ApiResponse(responseCode = "400", description = "Bad Request",
-                    content = @Content)
-    })
-    @PostMapping("/users")
-    public ResponseEntity<HttpStatus> registerUserAccount(@Valid @RequestBody UserDTO userDTO, HttpServletRequest request) {
-        if(emailExists(userDTO.getEmail())){
-            throw new UserAlreadyExistException("There is an account with that email address: " + userDTO.getEmail());
-        }
-        User registeredUser = userService.registerNewUserAccount(userDTO);
-        String appUrl = request.getContextPath();
-
-        eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registeredUser, request.getLocale(), appUrl));
-        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @Operation(summary = "Updating of user")
@@ -155,9 +133,5 @@ public class UserController {
         Map<String, String> errors = new HashMap<>();
         errors.put("message", "An account for that email already exists.");
         return errors;
-    }
-
-    private boolean emailExists(String email){
-        return userRepository.findByEmail(email) != null;
     }
 }
