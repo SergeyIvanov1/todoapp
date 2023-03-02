@@ -1,5 +1,6 @@
-package com.ivanov_sergey.todoapp.controller;
+package com.ivanov_sergey.todoapp.security.secure_controller;
 
+import com.ivanov_sergey.todoapp.exception_handling.IncorrectRequestDataException;
 import com.ivanov_sergey.todoapp.exception_handling.UserAlreadyExistException;
 import com.ivanov_sergey.todoapp.model.Role;
 import com.ivanov_sergey.todoapp.model.User;
@@ -12,8 +13,8 @@ import com.ivanov_sergey.todoapp.security.payload.request.SignupRequest;
 import com.ivanov_sergey.todoapp.security.payload.request.TokenRequest;
 import com.ivanov_sergey.todoapp.security.payload.response.JwtResponse;
 import com.ivanov_sergey.todoapp.security.payload.response.MessageResponse;
-import com.ivanov_sergey.todoapp.security.services.UserDetailsImpl;
-import com.ivanov_sergey.todoapp.service.RegistrationService;
+import com.ivanov_sergey.todoapp.security.secure_services.impl.UserDetailsImpl;
+import com.ivanov_sergey.todoapp.security.secure_services.RegistrationService;
 import com.ivanov_sergey.todoapp.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -33,10 +34,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static java.util.Objects.isNull;
 
 @CrossOrigin(origins = "http://localhost:8081", maxAge = 3600)
 @RestController
@@ -69,30 +70,35 @@ public class AuthController {
 
     @Operation(summary = "Register an account of user")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Created",
-                    content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = SignupRequest.class)) }),
+            @ApiResponse(responseCode = "200", description = "Ok",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = SignupRequest.class))}),
             @ApiResponse(responseCode = "400", description = "Bad Request",
                     content = @Content)
     })
     @PostMapping("/users/signup")
-    public ResponseEntity<HttpStatus> registerUserAccount(@Valid @RequestBody SignupRequest signupRequest,
+    public ResponseEntity<?> registerUserAccount(@Valid @RequestBody SignupRequest signupRequest,
                                                           HttpServletRequest request) {
-
-        if(emailIsExists(signupRequest.getEmail())){
-            throw new UserAlreadyExistException("There is an account with that email address: " + signupRequest.getEmail());
+        checkByNull(signupRequest);
+        if ((userRepository.existsByUsername(signupRequest.getUsername()))
+                || (userRepository.existsByEmail(signupRequest.getEmail()))) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Sorry, but email or username is already in use!"));
         }
+
         User registeredUser = userService.registerNewUserAccount(signupRequest);
         String appUrl = request.getContextPath();
 
         // sending an email to user
         eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registeredUser, request.getLocale(), appUrl));
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return ResponseEntity.ok().body(new MessageResponse("We sent a message to your mail. " +
+                "Please, click on by got link for confirmation email address."));
     }
 
     @Operation(summary = "Confirmation of user registration")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "202", description = "Accepted",
+            @ApiResponse(responseCode = "200", description = "Ok",
                     content = @Content),
             @ApiResponse(responseCode = "404", description = "Token Not Found",
                     content = @Content),
@@ -116,30 +122,31 @@ public class AuthController {
 
         user.setEnabled(true);
         userService.updateRegisteredUser(user);
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/signin")
     public ResponseEntity<JwtResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
+        System.out.println("loginRequest = " + loginRequest.toString()); // todo remove
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
                         loginRequest.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        String jwt = jwtUtils.generateJwtToken(userDetails);
+        String accessToken = jwtUtils.generateJwtToken(userDetails);
 
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
 
-        JwtResponse jwtResponse = new JwtResponse(jwt,
+        JwtResponse jwtResponse = new JwtResponse(accessToken,
                 userDetails.getId(),
                 userDetails.getUsername(),
                 userDetails.getEmail(),
                 roles);
-        System.out.println(jwtResponse);
+        System.out.println("jwtResponse = " + jwtResponse); // todo remove
         return ResponseEntity.ok(jwtResponse);
     }
 
@@ -160,8 +167,8 @@ public class AuthController {
 
         // Create new user's account
         User user = new User(signUpRequest.getUsername(),
-                             signUpRequest.getEmail(),
-                             encoder.encode(signUpRequest.getPassword()));
+                signUpRequest.getEmail(),
+                encoder.encode(signUpRequest.getPassword()));
 
         Set<Role> roles = registrationService.getRolesFromRequest(signUpRequest);
         user.setRoles(roles);
@@ -169,12 +176,27 @@ public class AuthController {
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
-    private boolean tokenIsExpired(VerificationToken verificationToken){
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(IncorrectRequestDataException.class)
+    public Map<String, String> handleIncorrectRequestDataException(IncorrectRequestDataException ex) {
+        Map<String, String> errors = new HashMap<>();
+        errors.put("message", ex.getMessage());
+        return errors;
+    }
+
+    private boolean tokenIsExpired(VerificationToken verificationToken) {
         Calendar cal = Calendar.getInstance();
         return (verificationToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0;
     }
 
-    private boolean emailIsExists(String email){
-        return userRepository.findByEmail(email) != null;
+    private static void checkByNull(SignupRequest signupRequest) {
+        if (isNull(signupRequest.getFirstName()) ||
+                isNull(signupRequest.getLastName()) ||
+                isNull(signupRequest.getUsername()) ||
+                isNull(signupRequest.getEmail()) ||
+                isNull(signupRequest.getPassword())) {
+            throw new IncorrectRequestDataException("Do not all fields is represented in the request");
+        }
     }
 }

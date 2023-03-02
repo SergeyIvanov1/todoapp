@@ -1,4 +1,4 @@
-package com.ivanov_sergey.todoapp.security.services;
+package com.ivanov_sergey.todoapp.security.secure_services;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

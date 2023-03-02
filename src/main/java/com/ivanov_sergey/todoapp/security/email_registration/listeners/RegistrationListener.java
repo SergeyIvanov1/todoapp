@@ -2,7 +2,7 @@ package com.ivanov_sergey.todoapp.security.email_registration.listeners;
 
 import com.ivanov_sergey.todoapp.model.User;
 import com.ivanov_sergey.todoapp.security.email_registration.events.OnRegistrationCompleteEvent;
-import com.ivanov_sergey.todoapp.service.RegistrationService;
+import com.ivanov_sergey.todoapp.security.secure_services.RegistrationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -16,7 +16,8 @@ import java.util.UUID;
 @Component
 public class RegistrationListener implements ApplicationListener<OnRegistrationCompleteEvent> {
 
-    private static final String HOST = "http://89.108.102.201:8082";
+//    private static final String HOST = "http://89.108.102.201:8082";
+    private static final String HOST = "http://localhost:8081";
     private static final String SITE = "http://myapp-s.com";
 
     private final RegistrationService verificationTokenService;
@@ -45,7 +46,10 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
 
         String recipientAddress = user.getEmail();
         String subject = "Registration Confirmation";
-        String confirmationUrl = event.getAppUrl() + "/registration?token=" + token;
+        String confirmationUrl = event.getAppUrl() + "/verify/" + token;
+
+        // TODO remove
+        System.out.println("RegistrationListener - confirmRegistration - event.getAppUrl() = " + event.getAppUrl());
 
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);

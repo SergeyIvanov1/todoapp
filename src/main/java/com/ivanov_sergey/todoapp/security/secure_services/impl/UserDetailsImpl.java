@@ -1,4 +1,4 @@
-package com.ivanov_sergey.todoapp.security.services;
+package com.ivanov_sergey.todoapp.security.secure_services.impl;
 
 import java.util.Collection;
 import java.util.List;

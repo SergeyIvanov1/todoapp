@@ -1,19 +1,14 @@
 package com.ivanov_sergey.todoapp.service.impl;
 
-import com.ivanov_sergey.todoapp.enums.ERole;
 import com.ivanov_sergey.todoapp.exception_handling.UserAlreadyExistException;
-import com.ivanov_sergey.todoapp.model.Role;
 import com.ivanov_sergey.todoapp.model.User;
 import com.ivanov_sergey.todoapp.repository.UserRepository;
 import com.ivanov_sergey.todoapp.security.payload.request.SignupRequest;
-import com.ivanov_sergey.todoapp.service.RegistrationService;
+import com.ivanov_sergey.todoapp.security.secure_services.RegistrationService;
 import com.ivanov_sergey.todoapp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @Service
 public class UserServiceImpl implements UserService {

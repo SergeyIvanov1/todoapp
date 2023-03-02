@@ -31,7 +31,7 @@ public class SignupRequest {
 
     @NotNull
     @NotEmpty
-    @Pattern(regexp = "[A-Za-zА-Яа-яЁё]{2,25}", message = "Username can contains only letters and be between 2 and 25 characters long")
+    @Pattern(regexp = "[0-9A-Za-zА-Яа-яЁё]{2,25}", message = "Username can contains only letters and be between 2 and 25 characters long")
     private String username;
 
     @NotNull

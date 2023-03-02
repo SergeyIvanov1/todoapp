@@ -81,6 +81,7 @@ databaseChangeLog:
                   remarks: "username"
                   constraints:
                     nullable: false
+                    unique: true
               - column:
                   name: first_name
                   type: varchar(50)
@@ -117,6 +118,7 @@ databaseChangeLog:
                   remarks: "email"
                   constraints:
                     nullable: false
+                    unique: true
               - column:
                   name: email_verified
                   type: boolean
