@@ -1,14 +1,10 @@
 package com.ivanov_sergey.todoapp.controller;
 
 import com.ivanov_sergey.todoapp.dto.TagDTO;
-import com.ivanov_sergey.todoapp.enums.TaskPriority;
-import com.ivanov_sergey.todoapp.enums.TaskStatus;
 import com.ivanov_sergey.todoapp.exception_handling.NoSuchTestEntityException;
 import com.ivanov_sergey.todoapp.exception_handling.TaskIncorrectData;
-import com.ivanov_sergey.todoapp.model.Tag;
-import com.ivanov_sergey.todoapp.model.Task;
-import com.ivanov_sergey.todoapp.model.User;
-import com.ivanov_sergey.todoapp.repository.TagRepository;
+import com.ivanov_sergey.todoapp.persist.model.Tag;
+import com.ivanov_sergey.todoapp.persist.repository.TagRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

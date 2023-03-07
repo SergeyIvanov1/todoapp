@@ -1,6 +1,6 @@
 package com.ivanov_sergey.todoapp.security.email_registration.events;
 
-import com.ivanov_sergey.todoapp.model.User;
+import com.ivanov_sergey.todoapp.persist.model.User;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.context.ApplicationEvent;

@@ -1,7 +1,7 @@
-package com.ivanov_sergey.todoapp.repository;
+package com.ivanov_sergey.todoapp.persist.repository;
 
 import com.ivanov_sergey.todoapp.enums.ERole;
-import com.ivanov_sergey.todoapp.model.Role;
+import com.ivanov_sergey.todoapp.persist.model.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,8 +1,9 @@
 package com.ivanov_sergey.todoapp.service.impl;
 
 import com.ivanov_sergey.todoapp.dto.TaskDTO;
-import com.ivanov_sergey.todoapp.model.Tag;
-import com.ivanov_sergey.todoapp.repository.TagRepository;
+import com.ivanov_sergey.todoapp.persist.model.Tag;
+import com.ivanov_sergey.todoapp.persist.repository.TagRepository;
+import com.ivanov_sergey.todoapp.requests.TaskRequest;
 import com.ivanov_sergey.todoapp.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,8 +23,8 @@ public class TagServiceImpl implements TagService {
         this.tagRepository = tagRepository;
     }
 
-    public Set<Tag> getTagsFromTask(TaskDTO taskDTO) {
-        Set<String> strTags = taskDTO.getTags().stream().map(Tag::getName).collect(Collectors.toSet());
+    public Set<Tag> getTagsFromTask(TaskRequest taskRequest) {
+        Set<String> strTags = taskRequest.getTags().stream().map(Tag::getName).collect(Collectors.toSet());
         Set<Tag> tags = new HashSet<>();
 
         strTags.forEach(tag -> {

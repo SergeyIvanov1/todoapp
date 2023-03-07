@@ -1,8 +1,8 @@
 package com.ivanov_sergey.todoapp.service.impl;
 
 import com.ivanov_sergey.todoapp.exception_handling.UserAlreadyExistException;
-import com.ivanov_sergey.todoapp.model.User;
-import com.ivanov_sergey.todoapp.repository.UserRepository;
+import com.ivanov_sergey.todoapp.persist.model.User;
+import com.ivanov_sergey.todoapp.persist.repository.UserRepository;
 import com.ivanov_sergey.todoapp.security.payload.request.SignupRequest;
 import com.ivanov_sergey.todoapp.security.secure_services.RegistrationService;
 import com.ivanov_sergey.todoapp.service.UserService;
@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService {
 //        boolean credentialsNonExpired = true;
 //        boolean accountNonLocked = true;
 //        try {
-//            com.ivanov_sergey.todoapp.model.User user = userRepository.findByEmail(email);
+//            com.ivanov_sergey.todoapp.persist.model.User user = userRepository.findByEmail(email);
 //            if (user == null) {
 //                throw new UsernameNotFoundException(
 //                        "No user found with username: " + email);

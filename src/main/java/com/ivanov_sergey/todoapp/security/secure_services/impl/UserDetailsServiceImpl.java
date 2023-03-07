@@ -1,7 +1,7 @@
 package com.ivanov_sergey.todoapp.security.secure_services.impl;
 
-import com.ivanov_sergey.todoapp.model.User;
-import com.ivanov_sergey.todoapp.repository.UserRepository;
+import com.ivanov_sergey.todoapp.persist.model.User;
+import com.ivanov_sergey.todoapp.persist.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

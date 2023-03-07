@@ -1,11 +1,11 @@
 package com.ivanov_sergey.todoapp.security.secure_services.impl;
 
 import com.ivanov_sergey.todoapp.enums.ERole;
-import com.ivanov_sergey.todoapp.model.Role;
-import com.ivanov_sergey.todoapp.model.User;
-import com.ivanov_sergey.todoapp.model.VerificationToken;
-import com.ivanov_sergey.todoapp.repository.RoleRepository;
-import com.ivanov_sergey.todoapp.repository.VerificationTokenRepository;
+import com.ivanov_sergey.todoapp.persist.model.Role;
+import com.ivanov_sergey.todoapp.persist.model.User;
+import com.ivanov_sergey.todoapp.persist.model.VerificationToken;
+import com.ivanov_sergey.todoapp.persist.repository.RoleRepository;
+import com.ivanov_sergey.todoapp.persist.repository.VerificationTokenRepository;
 import com.ivanov_sergey.todoapp.security.payload.request.SignupRequest;
 import com.ivanov_sergey.todoapp.security.secure_services.RegistrationService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -5,12 +5,12 @@ import com.ivanov_sergey.todoapp.enums.TaskPriority;
 import com.ivanov_sergey.todoapp.enums.TaskStatus;
 import com.ivanov_sergey.todoapp.exception_handling.NoSuchTestEntityException;
 import com.ivanov_sergey.todoapp.exception_handling.TaskIncorrectData;
-import com.ivanov_sergey.todoapp.model.Tag;
-import com.ivanov_sergey.todoapp.model.Task;
-import com.ivanov_sergey.todoapp.model.User;
-import com.ivanov_sergey.todoapp.repository.TagRepository;
-import com.ivanov_sergey.todoapp.repository.TaskRepository;
+import com.ivanov_sergey.todoapp.mapper.TaskMapper;
+import com.ivanov_sergey.todoapp.persist.model.Tag;
+import com.ivanov_sergey.todoapp.persist.model.Task;
+import com.ivanov_sergey.todoapp.requests.TaskRequest;
 import com.ivanov_sergey.todoapp.service.TagService;
+import com.ivanov_sergey.todoapp.service.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -31,13 +31,15 @@ import java.util.Set;
 @RequestMapping("/api/todo")
 public class TaskController {
 
-    private final TaskRepository taskRepository;
+    private final TaskService taskService;
     private final TagService tagService;
+    protected final TaskMapper taskMapper;
 
     @Autowired
-    public TaskController(TaskRepository taskRepository, TagService tagService) {
-        this.taskRepository = taskRepository;
+    public TaskController(TaskService taskService, TagService tagService, TaskMapper taskMapper) {
+        this.taskService = taskService;
         this.tagService = tagService;
+        this.taskMapper = taskMapper;
     }
 
     @Operation(summary = "Getting all tasks")
@@ -50,13 +52,13 @@ public class TaskController {
                     content = @Content)
     })
     @GetMapping("/tasks")
-    public ResponseEntity<List<Task>> getAllTasks(@RequestParam(required = false) String title) {
+    public ResponseEntity<List<TaskDTO>> getAllTasks(@RequestParam(required = false) String title) {
         List<Task> tasks = new ArrayList<>();
         try {
             if (title == null)
-                taskRepository.findAll().forEach(tasks::add);
+                taskService.findAllTasks().forEach(tasks::add);
             else
-                taskRepository.findByTitleContaining(title).forEach(tasks::add);
+                taskService.findAllTasksByTitleContaining(title).forEach(tasks::add);
 
             if (tasks.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -64,8 +66,10 @@ public class TaskController {
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        System.out.println("tasks from getAllTasks = " + tasks);
-        return new ResponseEntity<>(tasks, HttpStatus.CREATED);
+        List<TaskDTO> taskDTOS = taskMapper.tasksMapToDTOs(tasks);
+
+        System.out.println("taskDTOS from getAllTasks = " + taskDTOS);
+        return new ResponseEntity<>(taskDTOS, HttpStatus.CREATED);
     }
 
     @Operation(summary = "Get a task by its id")
@@ -77,7 +81,7 @@ public class TaskController {
     })
     @GetMapping("/tasks/{id}")
     public ResponseEntity<TaskDTO> getTaskById(@PathVariable("id") long id) {
-        Optional<Task> taskOptional = taskRepository.findById(id);
+        Optional<Task> taskOptional = taskService.findTaskById(id);
         Task taskFromDB;
         if (taskOptional.isPresent()) {
             taskFromDB = taskOptional.get();
@@ -111,23 +115,23 @@ public class TaskController {
                     content = @Content)
     })
     @PostMapping("/tasks")
-    public ResponseEntity<Task> createTask(@RequestBody TaskDTO taskDTO) {
-        Set<Tag> tagsFromTask = tagService.getTagsFromTask(taskDTO);
-        System.out.println("taskDTO = " + taskDTO); // todo remove
+    public ResponseEntity<Task> createTask(@RequestBody TaskRequest taskRequest) {
+        Set<Tag> tagsFromTask = tagService.getTagsFromTask(taskRequest);
+        System.out.println("taskRequest = " + taskRequest); // todo remove
         Task savingTask = Task.builder()
-                    .title(taskDTO.getTitle())
-                    .actualStartDate(taskDTO.getActualStartDate())
-                    .actualEndDate(taskDTO.getActualEndDate())
-                    .description(taskDTO.getDescription())
-                    .content(taskDTO.getContent())
-                    .status(TaskStatus.getTaskStatusByValue(taskDTO.getStatus()))
-                    .priority(TaskPriority.getTaskPriorityByValue(taskDTO.getPriority()))
-                    .hours(taskDTO.getHours())
+                    .title(taskRequest.getTitle())
+                    .actualStartDate(taskRequest.getActualStartDate())
+                    .actualEndDate(taskRequest.getActualEndDate())
+                    .description(taskRequest.getDescription())
+                    .content(taskRequest.getContent())
+                    .status(TaskStatus.getTaskStatusByValue(taskRequest.getStatus()))
+                    .priority(TaskPriority.getTaskPriorityByValue(taskRequest.getPriority()))
+                    .hours(taskRequest.getHours())
                     .tags(tagsFromTask)
                     .build();
         System.out.println("savingTask = " + savingTask); // todo remove
         try {
-            taskRepository.save(savingTask);
+            taskService.saveTaskToDB(savingTask);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -145,7 +149,7 @@ public class TaskController {
     })
     @PutMapping("/tasks/{id}")
     public ResponseEntity<Task> updateTask(@PathVariable("id") long id, @RequestBody TaskDTO taskDTO) {
-        Optional<Task> taskData = taskRepository.findById(id);
+        Optional<Task> taskData = taskService.findTaskById(id);
 
         if (taskData.isPresent()) {
             Task taskFromDB = taskData.get();
@@ -154,7 +158,7 @@ public class TaskController {
             taskFromDB.setContent(taskDTO.getContent());
             taskFromDB.setStatus(TaskStatus.getTaskStatusByValue(taskDTO.getStatus()));
             taskFromDB.setPriority(TaskPriority.getTaskPriorityByValue(taskDTO.getPriority()));
-            return new ResponseEntity<>(taskRepository.save(taskFromDB), HttpStatus.OK);
+            return new ResponseEntity<>(taskService.saveTaskToDB(taskFromDB), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -170,7 +174,7 @@ public class TaskController {
     @DeleteMapping("/tasks/{id}")
     public ResponseEntity<HttpStatus> deleteTask(@PathVariable("id") long id) {
         try {
-            taskRepository.deleteById(id);
+            taskService.deleteTaskById(id);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -187,7 +191,7 @@ public class TaskController {
     @DeleteMapping("/tasks")
     public ResponseEntity<HttpStatus> deleteAllTasks() {
         try {
-            taskRepository.deleteAll();
+            taskService.deleteAllTasks();
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

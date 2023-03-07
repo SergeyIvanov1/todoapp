@@ -1,9 +1,7 @@
-package com.ivanov_sergey.todoapp.model;
+package com.ivanov_sergey.todoapp.persist.model;
 
 import lombok.*;
 import org.hibernate.Hibernate;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.sql.Timestamp;

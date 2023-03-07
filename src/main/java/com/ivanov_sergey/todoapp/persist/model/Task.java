@@ -1,4 +1,4 @@
-package com.ivanov_sergey.todoapp.model;
+package com.ivanov_sergey.todoapp.persist.model;
 
 import com.ivanov_sergey.todoapp.enums.TaskPriority;
 import com.ivanov_sergey.todoapp.enums.TaskStatus;
@@ -8,7 +8,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.time.OffsetDateTime;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -79,8 +79,10 @@ public class Task {
     private Timestamp updateAt;
 
     @Column(name = "actual_start_date")
+//    @Temporal(TemporalType.TIMESTAMP)
     private Timestamp actualStartDate;
 
     @Column(name = "actual_end_date")
+//    @Temporal(TemporalType.TIMESTAMP)
     private Timestamp actualEndDate;
 }

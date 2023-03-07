@@ -1,11 +1,10 @@
 package com.ivanov_sergey.todoapp.security.secure_controller;
 
 import com.ivanov_sergey.todoapp.exception_handling.IncorrectRequestDataException;
-import com.ivanov_sergey.todoapp.exception_handling.UserAlreadyExistException;
-import com.ivanov_sergey.todoapp.model.Role;
-import com.ivanov_sergey.todoapp.model.User;
-import com.ivanov_sergey.todoapp.model.VerificationToken;
-import com.ivanov_sergey.todoapp.repository.UserRepository;
+import com.ivanov_sergey.todoapp.persist.model.Role;
+import com.ivanov_sergey.todoapp.persist.model.User;
+import com.ivanov_sergey.todoapp.persist.model.VerificationToken;
+import com.ivanov_sergey.todoapp.persist.repository.UserRepository;
 import com.ivanov_sergey.todoapp.security.email_registration.events.OnRegistrationCompleteEvent;
 import com.ivanov_sergey.todoapp.security.jwt.JwtUtils;
 import com.ivanov_sergey.todoapp.security.payload.request.LoginRequest;

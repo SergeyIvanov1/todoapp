@@ -1,12 +1,10 @@
-package com.ivanov_sergey.todoapp.model;
+package com.ivanov_sergey.todoapp.persist.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
-import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 @Getter

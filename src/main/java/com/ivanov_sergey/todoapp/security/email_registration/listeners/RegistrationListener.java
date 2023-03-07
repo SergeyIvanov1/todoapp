@@ -1,6 +1,6 @@
 package com.ivanov_sergey.todoapp.security.email_registration.listeners;
 
-import com.ivanov_sergey.todoapp.model.User;
+import com.ivanov_sergey.todoapp.persist.model.User;
 import com.ivanov_sergey.todoapp.security.email_registration.events.OnRegistrationCompleteEvent;
 import com.ivanov_sergey.todoapp.security.secure_services.RegistrationService;
 import org.springframework.beans.factory.annotation.Autowired;

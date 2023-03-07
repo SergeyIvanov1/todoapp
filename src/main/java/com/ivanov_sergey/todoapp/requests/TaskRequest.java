@@ -1,13 +1,13 @@
-package com.ivanov_sergey.todoapp.dto;
+package com.ivanov_sergey.todoapp.requests;
 
 import com.ivanov_sergey.todoapp.persist.model.Tag;
-import com.ivanov_sergey.todoapp.persist.model.TaskComment;
 import com.ivanov_sergey.todoapp.persist.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,8 +15,7 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TaskDTO {
-
+public class TaskRequest {
     private Long id;
     private String title;
     private String description;
@@ -25,8 +24,8 @@ public class TaskDTO {
     private String priority;
     private Integer hours;
 
-    private String actualStartDate;
-    private String actualEndDate;
+    private Timestamp actualStartDate;
+    private Timestamp actualEndDate;
     private User user;
     private Set<Tag> tags = new HashSet<>();
 //    private List<TaskComment> comments;
