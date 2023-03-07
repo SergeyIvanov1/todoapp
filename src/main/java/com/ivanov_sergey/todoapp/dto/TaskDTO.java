@@ -10,7 +10,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
@@ -26,9 +29,11 @@ public class TaskDTO {
     private String priority;
     private Integer hours;
 
+    private Timestamp actualStartDate;
+    private Timestamp actualEndDate;
 //    private User user;
 //
-//    private List<Tag> tags;
+    private Set<Tag> tags = new HashSet<>();
 //
 //    private List<TaskComment> comments;
 }

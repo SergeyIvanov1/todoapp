@@ -287,6 +287,114 @@ databaseChangeLog:
                   constraints:
                     nullable: true
   #                    nullable: false
+        - insert:
+            tableName: tags
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: name
+                  value: Errors
+              - column:
+                  name: color
+                  value: 'red'
+        - insert:
+            tableName: tags
+            columns:
+              - column:
+                  name: id
+                  value: 2
+              - column:
+                  name: name
+                  value: Bags
+              - column:
+                  name: color
+                  value: 'orange'
+        - insert:
+            tableName: tags
+            columns:
+              - column:
+                  name: id
+                  value: 3
+              - column:
+                  name: name
+                  value: UI
+              - column:
+                  name: color
+                  value: 'aqua'
+        - insert:
+            tableName: tags
+            columns:
+              - column:
+                  name: id
+                  value: 4
+              - column:
+                  name: name
+                  value: CI/CD
+              - column:
+                  name: color
+                  value: 'blueviolet'
+        - insert:
+            tableName: tags
+            columns:
+              - column:
+                  name: id
+                  value: 5
+              - column:
+                  name: name
+                  value: Tests
+              - column:
+                  name: color
+                  value: 'pink'
+        - insert:
+            tableName: tags
+            columns:
+              - column:
+                  name: id
+                  value: 6
+              - column:
+                  name: name
+                  value: WEB
+              - column:
+                  name: color
+                  value: 'coral'
+        - insert:
+            tableName: tags
+            columns:
+              - column:
+                  name: id
+                  value: 7
+              - column:
+                  name: name
+                  value: DB
+              - column:
+                  name: color
+                  value: 'gray'
+        - insert:
+            tableName: tags
+            columns:
+              - column:
+                  name: id
+                  value: 8
+              - column:
+                  name: name
+                  value: Warnings
+              - column:
+                  name: color
+                  value: 'green'
+        - insert:
+            tableName: tags
+            columns:
+              - column:
+                  name: id
+                  value: 9
+              - column:
+                  name: name
+                  value: Design
+              - column:
+                  name: color
+                  value: 'blue'
   - changeSet:
       id: 6
       author: sergey_ivanov

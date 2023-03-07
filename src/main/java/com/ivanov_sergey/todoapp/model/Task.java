@@ -9,11 +9,14 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
-@ToString
+//@EqualsAndHashCode(exclude="tags")
+//@ToString
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -49,11 +52,20 @@ public class Task {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @ManyToMany(
+//            cascade = CascadeType.ALL
+            fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST,
+                    CascadeType.MERGE,
+                    CascadeType.REFRESH,
+                    CascadeType.DETACH}
+    )
     @JoinTable(name = "task_tag",
             joinColumns = @JoinColumn(name = "task_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id"))
-    private List<Tag> tags;
+    private Set<Tag> tags = new HashSet<>();
 
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL)
     private List<TaskComment> comments;

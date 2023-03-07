@@ -65,6 +65,7 @@ public class WebSecurityConfig {
                 .authorizeRequests().antMatchers("/api/auth/**").permitAll()
                 .antMatchers("/api/test/**").permitAll()
                 .antMatchers("/api/todo/**").permitAll()
+                .antMatchers("/api/tags/**").permitAll()
 //                .antMatchers("/**").permitAll()
                 .anyRequest().authenticated();
 

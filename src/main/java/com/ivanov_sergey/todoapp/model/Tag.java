@@ -1,10 +1,13 @@
 package com.ivanov_sergey.todoapp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -25,16 +28,19 @@ public class Tag {
     @Column(name = "color")
     private String color;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Tag tag = (Tag) o;
-        return id != null && Objects.equals(id, tag.id);
-    }
+    @JsonIgnore
+    @ManyToMany(
+//            cascade = CascadeType.ALL
+            fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST,
+                    CascadeType.MERGE,
+                    CascadeType.REFRESH,
+                    CascadeType.DETACH}, mappedBy = "tags"
+    )
+//    @JoinTable(name = "task_tag",
+//            joinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id"),
+//            inverseJoinColumns = @JoinColumn(name = "task_id", referencedColumnName = "id"))
+    private Set<Task> tasks = new HashSet<>();
 
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
+
 }

@@ -19,9 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @CrossOrigin(origins = "http://localhost:8081")
 @RestController
@@ -45,9 +43,10 @@ public class TagController {
                     content = @Content)
     })
     @GetMapping("/tags")
-    public ResponseEntity<List<Tag>> getAllTags(@RequestParam(required = false) String name) {
+    public ResponseEntity<Set<Tag>> getAllTags(@RequestParam(required = false) String name) {
+        Set<Tag> tags = new HashSet<>();
+
         try {
-            List<Tag> tags = new ArrayList();
 
             if (name == null)
                 tags.addAll(tagRepository.findAll());
@@ -55,12 +54,12 @@ public class TagController {
                 tags.addAll(tagRepository.findByName(name));
 
             if (tags.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.OK);
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
-            return new ResponseEntity<>(tags, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+        return new ResponseEntity<>(tags, HttpStatus.CREATED);
     }
 
     @Operation(summary = "Get a tag by its id")

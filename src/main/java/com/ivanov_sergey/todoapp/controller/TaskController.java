@@ -5,9 +5,12 @@ import com.ivanov_sergey.todoapp.enums.TaskPriority;
 import com.ivanov_sergey.todoapp.enums.TaskStatus;
 import com.ivanov_sergey.todoapp.exception_handling.NoSuchTestEntityException;
 import com.ivanov_sergey.todoapp.exception_handling.TaskIncorrectData;
+import com.ivanov_sergey.todoapp.model.Tag;
 import com.ivanov_sergey.todoapp.model.Task;
 import com.ivanov_sergey.todoapp.model.User;
+import com.ivanov_sergey.todoapp.repository.TagRepository;
 import com.ivanov_sergey.todoapp.repository.TaskRepository;
+import com.ivanov_sergey.todoapp.service.TagService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @CrossOrigin(origins = "http://localhost:8081")
 @RestController
@@ -28,10 +32,12 @@ import java.util.Optional;
 public class TaskController {
 
     private final TaskRepository taskRepository;
+    private final TagService tagService;
 
     @Autowired
-    public TaskController(TaskRepository taskRepository) {
+    public TaskController(TaskRepository taskRepository, TagService tagService) {
         this.taskRepository = taskRepository;
+        this.tagService = tagService;
     }
 
     @Operation(summary = "Getting all tasks")
@@ -45,22 +51,21 @@ public class TaskController {
     })
     @GetMapping("/tasks")
     public ResponseEntity<List<Task>> getAllTasks(@RequestParam(required = false) String title) {
+        List<Task> tasks = new ArrayList<>();
         try {
-            List<Task> tasks = new ArrayList<>();
-
             if (title == null)
                 taskRepository.findAll().forEach(tasks::add);
             else
                 taskRepository.findByTitleContaining(title).forEach(tasks::add);
 
             if (tasks.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.OK);
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
-
-            return new ResponseEntity<>(tasks, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+        System.out.println("tasks from getAllTasks = " + tasks);
+        return new ResponseEntity<>(tasks, HttpStatus.CREATED);
     }
 
     @Operation(summary = "Get a task by its id")
@@ -100,34 +105,41 @@ public class TaskController {
     @Operation(summary = "Creating a task")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Created",
-                    content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = TaskDTO.class)) }),
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = TaskDTO.class))}),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content)
     })
     @PostMapping("/tasks")
     public ResponseEntity<Task> createTask(@RequestBody TaskDTO taskDTO) {
-        try {
-            Task savingTask = taskRepository.save(Task.builder()
+        Set<Tag> tagsFromTask = tagService.getTagsFromTask(taskDTO);
+        System.out.println("taskDTO = " + taskDTO); // todo remove
+        Task savingTask = Task.builder()
                     .title(taskDTO.getTitle())
+                    .actualStartDate(taskDTO.getActualStartDate())
+                    .actualEndDate(taskDTO.getActualEndDate())
                     .description(taskDTO.getDescription())
                     .content(taskDTO.getContent())
                     .status(TaskStatus.getTaskStatusByValue(taskDTO.getStatus()))
                     .priority(TaskPriority.getTaskPriorityByValue(taskDTO.getPriority()))
-                    .hours(Integer.valueOf(taskDTO.getHours()))
-                    .build());
-
-            return new ResponseEntity<>(savingTask, HttpStatus.CREATED);
+                    .hours(taskDTO.getHours())
+                    .tags(tagsFromTask)
+                    .build();
+        System.out.println("savingTask = " + savingTask); // todo remove
+        try {
+            taskRepository.save(savingTask);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+        System.out.println("savingTask after save = " + savingTask); // todo remove
+        return new ResponseEntity<>(savingTask, HttpStatus.CREATED);
     }
 
     @Operation(summary = "Updating a task by its id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Ok",
-                    content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = TaskDTO.class)) }),
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = TaskDTO.class))}),
             @ApiResponse(responseCode = "404", description = "Not Found",
                     content = @Content)
     })
