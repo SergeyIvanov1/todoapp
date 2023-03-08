@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class EntityGlobalExceptionHandler {
 
     @ExceptionHandler
-    public ResponseEntity<TaskIncorrectData> handleException(NoSuchTestEntityException exception){
+    public ResponseEntity<TaskIncorrectData> handleException(NoSuchEntityException exception){
         TaskIncorrectData data = new TaskIncorrectData();
         data.setInfo(exception.getMessage());
 

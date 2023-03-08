@@ -1,10 +1,7 @@
 package com.ivanov_sergey.todoapp.controller;
 
-import com.ivanov_sergey.todoapp.dto.TagDTO;
-import com.ivanov_sergey.todoapp.exception_handling.NoSuchEntityException;
-import com.ivanov_sergey.todoapp.exception_handling.TaskIncorrectData;
-import com.ivanov_sergey.todoapp.persist.model.Tag;
-import com.ivanov_sergey.todoapp.persist.repository.TagRepository;
+import com.ivanov_sergey.todoapp.persist.model.Team;
+import com.ivanov_sergey.todoapp.persist.repository.TeamRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -15,21 +12,23 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 @CrossOrigin(origins = "http://localhost:8081")
 @RestController
 @RequestMapping("/api")
-public class TagController {
+public class TeamController {
 
-    private final TagRepository tagRepository;
+    private final TeamRepository teamRepository;
 
     @Autowired
-    public TagController(TagRepository tagRepository) {
-        this.tagRepository = tagRepository;
+    public TeamController(TeamRepository teamRepository) {
+        this.teamRepository = teamRepository;
     }
 
-    @Operation(summary = "Getting all tags")
+    @Operation(summary = "Getting all teams")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Ok",
                     content = @Content),
@@ -38,117 +37,117 @@ public class TagController {
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content)
     })
-    @GetMapping("/tags")
-    public ResponseEntity<Set<Tag>> getAllTags(@RequestParam(required = false) String name) {
-        Set<Tag> tags = new HashSet<>();
+    @GetMapping("/teams")
+    public ResponseEntity<Set<Team>> getAllTeams(@RequestParam(required = false) String name) {
+        Set<Team> teams = new HashSet<>();
 
         try {
 
             if (name == null)
-                tags.addAll(tagRepository.findAll());
+                teams.addAll(teamRepository.findAll());
             else
-                tags.addAll(tagRepository.findByName(name));
+                teams.addAll(teamRepository.findByName(name));
 
-            if (tags.isEmpty()) {
+            if (teams.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(tags, HttpStatus.CREATED);
+        return new ResponseEntity<>(teams, HttpStatus.CREATED);
     }
 
-    @Operation(summary = "Get a tag by its id")
+    @Operation(summary = "Get a team by its id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Ok",
                     content = @Content),
             @ApiResponse(responseCode = "404", description = "Not Found",
                     content = @Content)
     })
-    @GetMapping("/tags/{id}")
-    public ResponseEntity<Tag> getTaskById(@PathVariable("id") long id) {
-        Optional<Tag> tagOptional = tagRepository.findById(id);
+    @GetMapping("/teams/{id}")
+    public ResponseEntity<Team> getTeamById(@PathVariable("id") long id) {
+        Optional<Team> optionalTeam = teamRepository.findById(id);
 
-        if (tagOptional.isPresent()) {
-            return new ResponseEntity<>(tagOptional.get(), HttpStatus.OK);
+        if (optionalTeam.isPresent()) {
+            return new ResponseEntity<>(optionalTeam.get(), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
-    @Operation(summary = "Creating a tag")
+    @Operation(summary = "Creating a team")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Created",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = TagDTO.class)) }),
+                            schema = @Schema(implementation = Team.class)) }),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content)
     })
-    @PostMapping("/tags")
-    public ResponseEntity<Tag> createTag(@RequestBody TagDTO tagDTO) {
+    @PostMapping("/teams")
+    public ResponseEntity<Team> createTeam(@RequestBody Team request) {
         try {
-            Tag savingTask = tagRepository.save(Tag.builder()
-                    .name(tagDTO.getName())
-                    .color(tagDTO.getColor())
-                    .build());
+            Team team = teamRepository.save(request);
 
-            return new ResponseEntity<>(savingTask, HttpStatus.CREATED);
+            return new ResponseEntity<>(team, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @Operation(summary = "Updating a tag by its id")
+    @Operation(summary = "Updating a team by its id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Ok",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = TagDTO.class)) }),
+                            schema = @Schema(implementation = Team.class)) }),
             @ApiResponse(responseCode = "404", description = "Not Found",
                     content = @Content)
     })
-    @PutMapping("/tags/{id}")
-    public ResponseEntity<Tag> updateTag(@PathVariable("id") long id, @RequestBody TagDTO tagDTO) {
-        Optional<Tag> tagData = tagRepository.findById(id);
+    @PutMapping("/teams/{id}")
+    public ResponseEntity<Team> updateTeam(@PathVariable("id") long id,
+                                                             @RequestBody Team team) {
+        Optional<Team> optionalTeam = teamRepository.findById(id);
 
-        if (tagData.isPresent()) {
-            Tag tagFromDB = tagData.get();
-            tagFromDB.setName(tagDTO.getName());
-            tagFromDB.setColor(tagDTO.getColor());
+        if (optionalTeam.isPresent()) {
+            Team teamFromDB = optionalTeam.get();
+            teamFromDB.setName(team.getName());
+            teamFromDB.setAvatar(team.getAvatar());
+            teamFromDB.setCompany(team.getCompany());
+            teamFromDB.setHometown(team.getHometown());
 
-            return new ResponseEntity<>(tagRepository.save(tagFromDB), HttpStatus.OK);
+            return new ResponseEntity<>(teamRepository.save(teamFromDB), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
-    @Operation(summary = "Deleting a tag by its id")
+    @Operation(summary = "Deleting a team by its id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Ok",
                     content = @Content),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content)
     })
-    @DeleteMapping("/tags/{id}")
-    public ResponseEntity<HttpStatus> deleteTag(@PathVariable("id") long id) {
+    @DeleteMapping("/teams/{id}")
+    public ResponseEntity<HttpStatus> deleteTeam(@PathVariable("id") long id) {
         try {
-            tagRepository.deleteById(id);
+            teamRepository.deleteById(id);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @Operation(summary = "Deleting all tags")
+    @Operation(summary = "Deleting all teams")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Ok",
                     content = @Content),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content)
     })
-    @DeleteMapping("/tags")
-    public ResponseEntity<HttpStatus> deleteAllTags() {
+    @DeleteMapping("/teams")
+    public ResponseEntity<HttpStatus> deleteAllTeams() {
         try {
-            tagRepository.deleteAll();
+            teamRepository.deleteAll();
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -156,19 +155,19 @@ public class TagController {
 
     }
 
-    @ExceptionHandler
-    public ResponseEntity<TaskIncorrectData> handleException(NoSuchEntityException exception) {
-        TaskIncorrectData data = new TaskIncorrectData();
-        data.setInfo(exception.getMessage());
-
-        return new ResponseEntity<>(data, HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler
-    public ResponseEntity<TaskIncorrectData> handleException(Exception exception) {
-        TaskIncorrectData data = new TaskIncorrectData();
-        data.setInfo(exception.getMessage());
-
-        return new ResponseEntity<>(data, HttpStatus.BAD_REQUEST);
-    }
+//    @ExceptionHandler
+//    public ResponseEntity<TaskIncorrectData> handleException(NoSuchEntityException exception) {
+//        TaskIncorrectData data = new TaskIncorrectData();
+//        data.setInfo(exception.getMessage());
+//
+//        return new ResponseEntity<>(data, HttpStatus.NOT_FOUND);
+//    }
+//
+//    @ExceptionHandler
+//    public ResponseEntity<TaskIncorrectData> handleException(Exception exception) {
+//        TaskIncorrectData data = new TaskIncorrectData();
+//        data.setInfo(exception.getMessage());
+//
+//        return new ResponseEntity<>(data, HttpStatus.BAD_REQUEST);
+//    }
 }

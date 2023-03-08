@@ -3,7 +3,7 @@ package com.ivanov_sergey.todoapp.controller;
 import com.ivanov_sergey.todoapp.dto.TaskDTO;
 import com.ivanov_sergey.todoapp.enums.TaskPriority;
 import com.ivanov_sergey.todoapp.enums.TaskStatus;
-import com.ivanov_sergey.todoapp.exception_handling.NoSuchTestEntityException;
+import com.ivanov_sergey.todoapp.exception_handling.NoSuchEntityException;
 import com.ivanov_sergey.todoapp.exception_handling.TaskIncorrectData;
 import com.ivanov_sergey.todoapp.mapper.TaskMapper;
 import com.ivanov_sergey.todoapp.persist.model.Tag;
@@ -88,15 +88,16 @@ public class TaskController {
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        TaskDTO taskDTO = TaskDTO.builder()
-                .id(taskFromDB.getId())
-                .title(taskFromDB.getTitle())
-                .description(taskFromDB.getDescription())
-                .content(taskFromDB.getContent())
-                .status(TaskStatus.getValueByTaskStatus(taskFromDB.getStatus()))
-                .priority(TaskPriority.getValueByTaskPriority(taskFromDB.getPriority()))
-                .hours(taskFromDB.getHours())
-                .build();
+        TaskDTO taskDTO = taskMapper.mapToDTO(taskFromDB);
+//        TaskDTO taskDTO = TaskDTO.builder()
+//                .id(taskFromDB.getId())
+//                .title(taskFromDB.getTitle())
+//                .description(taskFromDB.getDescription())
+//                .content(taskFromDB.getContent())
+//                .status(TaskStatus.getValueByTaskStatus(taskFromDB.getStatus()))
+//                .priority(TaskPriority.getValueByTaskPriority(taskFromDB.getPriority()))
+//                .hours(taskFromDB.getHours())
+//                .build();
         return new ResponseEntity<>(taskDTO, HttpStatus.OK);
 
 //        if (taskOptional.isPresent()) {
@@ -110,7 +111,7 @@ public class TaskController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Created",
                     content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = TaskDTO.class))}),
+                            schema = @Schema(implementation = TaskRequest.class))}),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content)
     })
@@ -213,7 +214,7 @@ public class TaskController {
 //    }
 
     @ExceptionHandler
-    public ResponseEntity<TaskIncorrectData> handleException(NoSuchTestEntityException exception) {
+    public ResponseEntity<TaskIncorrectData> handleException(NoSuchEntityException exception) {
         TaskIncorrectData data = new TaskIncorrectData();
         data.setInfo(exception.getMessage());
 

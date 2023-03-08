@@ -67,6 +67,18 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Set<Role> roles = new HashSet<>();
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @ManyToMany(fetch = FetchType.EAGER,
+            cascade = {CascadeType.PERSIST,
+                    CascadeType.MERGE,
+                    CascadeType.REFRESH,
+                    CascadeType.DETACH})
+    @JoinTable(	name = "user_team",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "team_id", referencedColumnName = "id"))
+    private Set<Team> teams = new HashSet<>();
+
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
     private VerificationToken verificationToken;
 

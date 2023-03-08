@@ -1,7 +1,7 @@
 package com.ivanov_sergey.todoapp.controller;
 
 import com.ivanov_sergey.todoapp.dto.UserDTO;
-import com.ivanov_sergey.todoapp.exception_handling.NoSuchTestEntityException;
+import com.ivanov_sergey.todoapp.exception_handling.NoSuchEntityException;
 import com.ivanov_sergey.todoapp.exception_handling.TaskIncorrectData;
 import com.ivanov_sergey.todoapp.exception_handling.UserAlreadyExistException;
 import com.ivanov_sergey.todoapp.persist.model.User;
@@ -100,7 +100,7 @@ public class UserController {
     }
 
     @ExceptionHandler
-    public ResponseEntity<TaskIncorrectData> handleException(NoSuchTestEntityException exception) {
+    public ResponseEntity<TaskIncorrectData> handleException(NoSuchEntityException exception) {
         TaskIncorrectData data = new TaskIncorrectData();
         data.setInfo(exception.getMessage());
 

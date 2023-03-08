@@ -503,16 +503,306 @@ databaseChangeLog:
                   remarks: "expiry date"
                   constraints:
                     nullable: true
-#              - column:
-#                  name: published
-#                  type: boolean
-#                  remarks: "published"
-#                  constraints:
-#                    nullable: false
-#              - column:
-#                  name: title
-#                  type: varchar(255)
-#                  remarks: "title"
-#                  constraints:
-#                    nullable: false
+  - changeSet:
+      id: 9
+      author: sergey_ivanov
+      changes:
+        - createTable:
+            tableName: friend_requests
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  remarks: "friend_request id"
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: initiator_user_id
+                  type: bigint
+                  remarks: "initiator user id"
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_initiator_user_id
+                    references: users(id)
+              - column:
+                  name: target_user_id
+                  type: bigint
+                  remarks: "target user id"
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_target_user_id
+                    references: users(id)
+              - column:
+                  name: status
+                  type: varchar(64)
+                  remarks: "status"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: create_at
+                  type: TIMESTAMP
+                  remarks: "create date"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  remarks: "updated date"
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: 10
+      author: sergey_ivanov
+      changes:
+        - createTable:
+            tableName: media
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  remarks: "media id"
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: bigint
+                  remarks: "media user id"
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_media_user_id
+                    references: users(id)
+              - column:
+                  name: media_type
+                  type: varchar(64)
+                  remarks: "media type"
+                  constraints:
+                    nullable: false
+                  defaultValue: PHOTO
+              - column:
+                  name: name
+                  type: text
+                  remarks: "body"
+                  constraints:
+                    nullable: true
+              - column:
+                  name: filename
+                  type: varchar(64)
+                  remarks: "media type"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: create_at
+                  type: TIMESTAMP
+                  remarks: "create date"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  remarks: "updated date"
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: 11
+      author: sergey_ivanov
+      changes:
+        - createTable:
+            tableName: reactions
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  remarks: "media id"
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: bigint
+                  remarks: "media user id"
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_reaction_user_id
+                    references: users(id)
+              - column:
+                  name: media_id
+                  type: bigint
+                  remarks: "media id"
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_media_reaction_id
+                    references: media(id)
+              - column:
+                  name: reaction_type
+                  type: varchar(64)
+                  remarks: "reaction type"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: create_at
+                  type: TIMESTAMP
+                  remarks: "create date"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  remarks: "updated date"
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: 12
+      author: sergey_ivanov
+      changes:
+        - createTable:
+            tableName: profiles
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  remarks: "profile id"
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: bigint
+                  remarks: "profile user id"
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_profile_user_id
+                    references: users(id)
+              - column:
+                  name: gender
+                  type: char(1)
+                  remarks: "gender"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: birthday
+                  type: timestamp
+                  remarks: "birthday"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: photo_id
+                  type: bigint
+                  remarks: "photo id"
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_photo_id
+                    references: media(id)
+              - column:
+                  name: first_name
+                  type: varchar(50)
+                  remarks: "first name"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_name
+                  type: varchar(50)
+                  remarks: "last name"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: hometown
+                  type: varchar(64)
+                  remarks: "hometown"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: create_at
+                  type: TIMESTAMP
+                  remarks: "create date"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  remarks: "updated date"
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: 13
+      author: sergey_ivanov
+      changes:
+        - createTable:
+            tableName: teams
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  remarks: "team id"
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(64)
+                  remarks: "name"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: photo_id
+                  type: bigint
+                  remarks: "photo id"
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_photo_team_id
+                    references: media(id)
+              - column:
+                  name: company
+                  type: varchar(50)
+                  remarks: "company name"
+                  constraints:
+                    nullable: true
+              - column:
+                  name: hometown
+                  type: varchar(64)
+                  remarks: "hometown"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: create_at
+                  type: TIMESTAMP
+                  remarks: "create date"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  remarks: "updated date"
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: 14
+      author: sergey_ivanov
+      changes:
+        - createTable:
+            tableName: user_team
+            columns:
+              - column:
+                  name: user_id
+                  type: bigint
+                  remarks: "user id"
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_team_user_id
+                    references: users(id)
+              - column:
+                  name: team_id
+                  type: bigint
+                  remarks: "team id"
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_user_team_id
+                    references: roles(id)
+
 
