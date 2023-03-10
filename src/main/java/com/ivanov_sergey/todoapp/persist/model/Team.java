@@ -1,5 +1,7 @@
 package com.ivanov_sergey.todoapp.persist.model;
 
+import com.ivanov_sergey.todoapp.enums.TaskStatus;
+import com.ivanov_sergey.todoapp.enums.TeamType;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -50,6 +52,10 @@ public class Team {
                     CascadeType.DETACH})
     @JoinColumn(name = "photo_id")
     private Media avatar;
+
+    @Column(name = "teamType")
+    @Enumerated(EnumType.STRING)
+    private TeamType teamType;
 
     @Column(name = "company")
     private String company;

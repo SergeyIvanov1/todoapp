@@ -758,6 +758,12 @@ databaseChangeLog:
                     foreignKeyName: fk_photo_team_id
                     references: media(id)
               - column:
+                  name: team_type
+                  type: varchar(50)
+                  remarks: "team type"
+                  constraints:
+                    nullable: false
+              - column:
                   name: company
                   type: varchar(50)
                   remarks: "company name"
@@ -804,5 +810,51 @@ databaseChangeLog:
                     nullable: false
                     foreignKeyName: fk_user_team_id
                     references: roles(id)
-
+  - changeSet:
+      id: 15
+      author: sergey_ivanov
+      changes:
+        - createTable:
+            tableName: notifications
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  remarks: "friend_request id"
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: notification_status
+                  type: varchar(64)
+                  remarks: "status"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: context
+                  type: varchar(64)
+                  remarks: "context of notification"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: bigint
+                  remarks: "user id"
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_notification_user_id
+                    references: users(id)
+              - column:
+                  name: create_at
+                  type: TIMESTAMP
+                  remarks: "create date"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  remarks: "updated date"
+                  constraints:
+                    nullable: false
 
