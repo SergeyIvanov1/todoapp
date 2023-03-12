@@ -20,7 +20,7 @@ import java.util.List;
 @AllArgsConstructor
 public class TaskCommentDTO {
 
-    private Timestamp updateAt;
+    private String updateAt;
     private String text;
     private Long taskId;
     private String username;

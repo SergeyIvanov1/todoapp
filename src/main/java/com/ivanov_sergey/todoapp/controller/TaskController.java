@@ -89,22 +89,7 @@ public class TaskController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         TaskDTO taskDTO = taskMapper.mapToDTO(taskFromDB);
-//        TaskDTO taskDTO = TaskDTO.builder()
-//                .id(taskFromDB.getId())
-//                .title(taskFromDB.getTitle())
-//                .description(taskFromDB.getDescription())
-//                .content(taskFromDB.getContent())
-//                .status(TaskStatus.getValueByTaskStatus(taskFromDB.getStatus()))
-//                .priority(TaskPriority.getValueByTaskPriority(taskFromDB.getPriority()))
-//                .hours(taskFromDB.getHours())
-//                .build();
         return new ResponseEntity<>(taskDTO, HttpStatus.OK);
-
-//        if (taskOptional.isPresent()) {
-//            return new ResponseEntity<>(taskOptional.get(), HttpStatus.OK);
-//        } else {
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        }
     }
 
     @Operation(summary = "Creating a task")

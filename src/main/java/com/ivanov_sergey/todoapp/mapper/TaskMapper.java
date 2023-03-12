@@ -10,7 +10,7 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface TaskMapper {
     List<TaskDTO> tasksMapToDTOs (List<Task> tasks);
-    @Mapping(target = "actualStartDate", source = "actualStartDate", dateFormat = "dd-MM-yyyy HH:mm")
-    @Mapping(target = "actualEndDate", source = "actualEndDate", dateFormat = "dd-MM-yyyy HH:mm")
+    @Mapping(target = "actualStartDate", source = "actualStartDate", dateFormat = "d MMM yyyy, HH:mm")
+    @Mapping(target = "actualEndDate", source = "actualEndDate", dateFormat = "d MMM yyyy, HH:mm")
     TaskDTO mapToDTO (Task task);
 }

@@ -461,13 +461,12 @@ databaseChangeLog:
                     foreignKeyName: fk_task_id
                     references: tasks(id)
               - column:
-                  name: user_id
-                  type: bigint
-                  remarks: "user id"
+                  name: username
+                  type: varchar(64)
+                  remarks: "username"
                   constraints:
                     nullable: false
-                    foreignKeyName: fk_user_id
-                    references: users(id)
+
   - changeSet:
       id: 8
       author: sergey_ivanov

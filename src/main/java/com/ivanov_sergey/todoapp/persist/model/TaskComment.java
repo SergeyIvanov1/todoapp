@@ -42,11 +42,5 @@ public class TaskComment {
     @JoinColumn(name = "task_id")
     private Task task;
 
-    @JsonIgnore
-    @ManyToOne(cascade = {CascadeType.PERSIST,
-            CascadeType.MERGE,
-            CascadeType.REFRESH,
-            CascadeType.DETACH})
-    @JoinColumn(name = "user_id")
-    private User user;
+   private String username;
 }
