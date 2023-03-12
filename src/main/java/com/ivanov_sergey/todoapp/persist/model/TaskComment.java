@@ -1,5 +1,6 @@
 package com.ivanov_sergey.todoapp.persist.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -13,7 +14,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@EqualsAndHashCode
+//@EqualsAndHashCode
 @Entity
 @Table(name = "comments")
 public class TaskComment {
@@ -30,14 +31,22 @@ public class TaskComment {
     @Column(name = "updated_at")
     private Timestamp updateAt;
 
-    @Column(name = "comment")
-    private String comment;
+    @Column(name = "text")
+    private String text;
 
-    @ManyToOne
+    @JsonIgnore
+    @ManyToOne(cascade = {CascadeType.PERSIST,
+            CascadeType.MERGE,
+            CascadeType.REFRESH,
+            CascadeType.DETACH})
     @JoinColumn(name = "task_id")
     private Task task;
 
-    @ManyToOne
+    @JsonIgnore
+    @ManyToOne(cascade = {CascadeType.PERSIST,
+            CascadeType.MERGE,
+            CascadeType.REFRESH,
+            CascadeType.DETACH})
     @JoinColumn(name = "user_id")
     private User user;
 }

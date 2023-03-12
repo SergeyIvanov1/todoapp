@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -29,5 +30,5 @@ public class TaskDTO {
     private String actualEndDate;
     private User user;
     private Set<Tag> tags = new HashSet<>();
-//    private List<TaskComment> comments;
+    private List<TaskComment> comments;
 }

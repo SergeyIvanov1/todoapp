@@ -63,9 +63,7 @@ public class WebSecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 //                .authorizeRequests().antMatchers("/**").permitAll()
                 .authorizeRequests().antMatchers("/api/auth/**").permitAll()
-                .antMatchers("/api/test/**").permitAll()
-                .antMatchers("/api/todo/**").permitAll()
-                .antMatchers("/api/tags/**").permitAll()
+                .antMatchers("/api/**").permitAll()
 //                .antMatchers("/**").permitAll()
                 .anyRequest().authenticated();
 
